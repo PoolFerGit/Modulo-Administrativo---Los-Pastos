@@ -1,0 +1,61 @@
+# =============================
+# NODE
+# =============================
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =============================
+# VARIABLES DE ENTORNO
+# =============================
+.env
+.env.*
+!.env.example
+
+# =============================
+# ANGULAR
+# =============================
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/
+coverage/
+
+# =============================
+# IDEs Y EDITORES
+# =============================
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+
+.history/
+
+# =============================
+# OTROS
+# =============================
+.sass-cache/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+__screenshots__/
+
+# =============================
+# SISTEMA
+# =============================
+.DS_Store
+Thumbs.db
