@@ -1,4 +1,6 @@
 import express from 'express';
+import 'dotenv/config';
+import { probarConexion } from './config/db.js';
 
 const app = express();
 
@@ -8,6 +10,22 @@ app.get('/', (request, response) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
+async function iniciarAplicacion() {
+
+    try {
+
+        await probarConexion();
+
+        app.listen(PORT, () => {
+            console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+        });
+
+    } catch (error) {
+
+        console.error('No fue posible iniciar la aplicación.');
+
+    }
+
+}
+
+iniciarAplicacion();
