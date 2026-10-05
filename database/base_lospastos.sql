@@ -42,3 +42,29 @@ CREATE TABLE datos (
     tipo_evento VARCHAR(100) NOT NULL,
     fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+USE admin_los_pastos;
+INSERT INTO productos
+(tipo_producto, nombre, color, descripcion, precio, talla_tamano, imagen, activo)
+VALUES
+(
+    'TELA',
+    'Gabardina azul',
+    'Azul marino',
+    'Tela para confección de prendas',
+    6.50,
+    '20 m x 2 m',
+    '',
+    TRUE
+),
+(
+    'PRENDA',
+    'Pantalón de trabajo',
+    'Negro',
+    'Pantalón para trabajo',
+    25.00,
+    'M',
+    '',
+    TRUE
+);
+select * from productos;
