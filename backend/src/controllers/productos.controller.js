@@ -1,22 +1,27 @@
-import pool from '../config/db.js';
+import { listarProductos } from '../services/productos.service.js';
 
 export const obtenerProductos = async (request, response) => {
 
     try {
 
-        const [productos] = await pool.query(
-            'SELECT * FROM productos'
-        );
+        const productos = await listarProductos();
 
-        response.json(productos);
+        response.status(200).json({
+            total: productos.length,
+            productos: productos
+        });
 
     } catch (error) {
 
-        console.error('Error al consultar productos:', error);
+        console.error(
+            'Error al obtener los productos:',
+            error
+        );
 
         response.status(500).json({
-            mensaje: 'Error al consultar los productos'
+            mensaje: 'No fue posible obtener los productos.'
         });
 
     }
+
 };
