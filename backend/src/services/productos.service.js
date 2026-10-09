@@ -13,9 +13,49 @@ export async function listarProductos() {
             talla_tamano,
             imagen,
             activo
-        FROM productos where id_producto > 99
+        FROM productos 
         ORDER BY id_producto ASC`
     );
 
     return productos;
+}
+
+
+//postear productos:
+export async function registrarProducto(producto) {
+
+    const {
+        tipo_producto,
+        nombre,
+        color,
+        descripcion,
+        precio,
+        talla_tamano,
+        imagen
+    } = producto;
+
+    const [resultado] = await pool.query(
+        `INSERT INTO productos
+        (
+            tipo_producto,
+            nombre,
+            color,
+            descripcion,
+            precio,
+            talla_tamano,
+            imagen
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+            tipo_producto,
+            nombre,
+            color,
+            descripcion,
+            precio,
+            talla_tamano,
+            imagen
+        ]
+    );
+
+    return resultado;
 }

@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 import { probarConexion } from './config/db.js';
 import productosRoutes from './routes/productos.routes.js';
+import {notFound, errorHandler} from './middlewares/error.middleware.js';
 
 const app = express();
 
@@ -16,6 +17,10 @@ app.get('/', (request, response) => {
 
 // Rutas de productos
 app.use('/api/productos', productosRoutes);
+
+// Middleware para manejar rutas no encontradas
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
