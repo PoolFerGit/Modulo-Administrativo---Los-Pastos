@@ -2,8 +2,10 @@ import express from 'express';
 import 'dotenv/config';
 
 import { probarConexion } from './config/db.js';
+import {probarConexionCatalogo} from './config/dbCatalogo.js';
 import productosRoutes from './routes/productos.routes.js';
 import {notFound, errorHandler} from './middlewares/error.middleware.js';
+import integracionRoutes from './routes/integracion.routes.js';
 
 const app = express();
 
@@ -18,6 +20,9 @@ app.get('/', (request, response) => {
 // Rutas de productos
 app.use('/api/productos', productosRoutes);
 
+// Rutas de integración
+app.use('/api/integracion', integracionRoutes);
+
 // Middleware para manejar rutas no encontradas
 app.use(notFound);
 app.use(errorHandler);
@@ -30,6 +35,7 @@ async function iniciarAplicacion() {
 
         // Primero comprobamos MySQL
         await probarConexion();
+        await probarConexionCatalogo();
 
         // Si la conexión funciona, levantamos Express
         app.listen(PORT, () => {

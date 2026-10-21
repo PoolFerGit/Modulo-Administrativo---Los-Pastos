@@ -33,3 +33,18 @@ export function validarProducto(producto) {
 
     return errores;
 }
+
+export function validarEstadoProducto(datos) {
+
+    const errores = [];
+
+    if (typeof datos.activo !== 'boolean') {
+
+        errores.push(
+            'El estado activo debe ser verdadero o falso.'
+        );
+
+    }
+
+    return errores;
+}
