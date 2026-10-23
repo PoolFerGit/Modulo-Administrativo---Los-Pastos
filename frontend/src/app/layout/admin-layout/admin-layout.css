@@ -1,0 +1,26 @@
+:host {
+    display: block;
+    min-height: 100vh;
+}
+
+.admin-layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    min-height: 100vh;
+    background-color: #f4f6f8;
+}
+
+app-sidebar {
+    width: 240px;
+    min-width: 240px;
+}
+
+.admin-main {
+    min-width: 0;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+}
+
+.admin-content {
+    padding: 30px;
+}

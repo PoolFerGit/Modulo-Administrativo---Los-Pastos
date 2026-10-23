@@ -1,1 +1,83 @@
-<p>productos works!</p>
+<section class="productos">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Productos</h1>
+
+            <p>
+                Administración de productos
+                del catálogo.
+            </p>
+        </div>
+
+        <a
+            routerLink="/productos/nuevo"
+            class="btn-primary"
+        >
+            + Nuevo producto
+        </a>
+
+    </div>
+
+
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>1</td>
+
+                    <td>
+                        Producto de demostración
+                    </td>
+
+                    <td>
+                        Trabajo
+                    </td>
+
+                    <td>
+                        $30.00
+                    </td>
+
+                    <td>
+                        <span class="activo">
+                            Activo
+                        </span>
+                    </td>
+
+                    <td>
+                        <a
+                            routerLink="/productos/1/editar"
+                        >
+                            Editar
+                        </a>
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <p class="demo">
+            Información de demostración.
+            Los datos reales se cargarán desde la API.
+        </p>
+
+    </div>
+
+</section>
