@@ -1,5 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
+import cors from 'cors';
 
 import { probarConexion } from './config/db.js';
 import {probarConexionCatalogo} from './config/dbCatalogo.js';
@@ -8,6 +9,12 @@ import {notFound, errorHandler} from './middlewares/error.middleware.js';
 import integracionRoutes from './routes/integracion.routes.js';
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:4300'
+}));
+
+app.use(express.json());
 
 // Permite recibir datos JSON
 app.use(express.json());

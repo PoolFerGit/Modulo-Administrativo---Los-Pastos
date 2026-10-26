@@ -1,0 +1,51 @@
+.mensaje {
+    padding: 20px;
+
+    background-color: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    color: #6b7280;
+}
+
+.mensaje.error {
+    color: #b42318;
+
+    background-color: #fff5f5;
+
+    border-color: #fecaca;
+}
+
+.activo {
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background-color: #ecfdf3;
+
+    color: #027a48;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.inactivo {
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background-color: #f2f4f7;
+
+    color: #667085;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}

@@ -1,25 +1,22 @@
-<section class="productos">
+@if (cargando()) {
 
-    <div class="page-header">
-
-        <div>
-            <h1>Productos</h1>
-
-            <p>
-                Administración de productos
-                del catálogo.
-            </p>
-        </div>
-
-        <a
-            routerLink="/productos/nuevo"
-            class="btn-primary"
-        >
-            + Nuevo producto
-        </a>
-
+    <div class="mensaje">
+        Cargando productos...
     </div>
 
+}
+
+
+@if (error()) {
+
+    <div class="mensaje error">
+        {{ error() }}
+    </div>
+
+}
+
+
+@if (!cargando() && !error()) {
 
     <div class="table-card">
 
@@ -29,55 +26,96 @@
                 <tr>
                     <th>ID</th>
                     <th>Producto</th>
+                    <th>Tipo</th>
                     <th>Categoría</th>
                     <th>Precio</th>
                     <th>Estado</th>
+                    <th>Destacado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
 
             <tbody>
 
-                <tr>
-                    <td>1</td>
+                @for (
+                    producto of productos();
+                    track producto.id_producto
+                ) {
 
-                    <td>
-                        Producto de demostración
-                    </td>
+                    <tr>
 
-                    <td>
-                        Trabajo
-                    </td>
+                        <td>
+                            {{ producto.id_producto }}
+                        </td>
 
-                    <td>
-                        $30.00
-                    </td>
+                        <td>
+                            {{ producto.nombre }}
+                        </td>
 
-                    <td>
-                        <span class="activo">
-                            Activo
-                        </span>
-                    </td>
+                        <td>
+                            {{ producto.tipo_producto }}
+                        </td>
 
-                    <td>
-                        <a
-                            routerLink="/productos/1/editar"
-                        >
-                            Editar
-                        </a>
-                    </td>
+                        <td>
+                            {{ producto.categoria_nombre }}
+                        </td>
 
-                </tr>
+                        <td>
+                            ${{ producto.precio }}
+                        </td>
+
+                        <td>
+
+                            @if (producto.activo) {
+
+                                <span class="activo">
+                                    Activo
+                                </span>
+
+                            } @else {
+
+                                <span class="inactivo">
+                                    Inactivo
+                                </span>
+
+                            }
+
+                        </td>
+
+                        <td>
+
+                            @if (
+                                producto.producto_destacado
+                            ) {
+                                Sí
+                            } @else {
+                                No
+                            }
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                [routerLink]="[
+                                    '/productos',
+                                    producto.id_producto,
+                                    'editar'
+                                ]"
+                            >
+                                Editar
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                }
 
             </tbody>
 
         </table>
 
-        <p class="demo">
-            Información de demostración.
-            Los datos reales se cargarán desde la API.
-        </p>
-
     </div>
 
-</section>
+}
