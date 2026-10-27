@@ -11,6 +11,10 @@ import {
     RespuestaProductos
 } from '../models/producto';
 
+import {
+    RespuestaCategorias
+} from '../models/categoria';
+
 
 @Injectable({
     providedIn: 'root'
@@ -22,12 +26,22 @@ export class ProductosService {
 
     private apiUrl =
         'http://localhost:3001/api/productos';
+    private apiUrlCategorias =
+        'http://localhost:3001/api/categorias';
 
 
     obtenerProductos() {
 
         return this.http.get<RespuestaProductos>(
             this.apiUrl
+        );
+
+    }
+
+    obtenerCategorias() {
+
+        return this.http.get<RespuestaCategorias>(
+            this.apiUrlCategorias
         );
 
     }
