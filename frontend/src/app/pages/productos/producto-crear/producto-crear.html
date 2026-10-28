@@ -1,18 +1,17 @@
 <section class="producto-form">
 
+    <!-- ========================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================= -->
+
     <div class="page-header">
 
         <div>
-
-            <h1>
-                Registrar producto
-            </h1>
+            <h1>Registrar producto</h1>
 
             <p>
-                Ingresa la información
-                del nuevo producto.
+                Ingresa la información del nuevo producto.
             </p>
-
         </div>
 
         <a
@@ -25,13 +24,22 @@
     </div>
 
 
+    <!-- ========================================= -->
+    <!-- FORMULARIO PRINCIPAL -->
+    <!-- ========================================= -->
+
     <form
         [formGroup]="formulario"
+        (ngSubmit)="registrarProducto()"
         class="form-card"
     >
 
         <div class="form-grid">
 
+
+            <!-- ================================= -->
+            <!-- TIPO DE PRODUCTO -->
+            <!-- ================================= -->
 
             <div class="campo">
 
@@ -39,9 +47,7 @@
                     Tipo de producto *
                 </label>
 
-                <select
-                    formControlName="tipo_producto"
-                >
+                <select formControlName="tipo_producto">
 
                     <option value="">
                         Seleccione
@@ -58,10 +64,8 @@
                 </select>
 
                 @if (
-                    formulario.controls
-                        .tipo_producto.touched &&
-                    formulario.controls
-                        .tipo_producto.invalid
+                    formulario.controls.tipo_producto.touched &&
+                    formulario.controls.tipo_producto.invalid
                 ) {
 
                     <small class="error">
@@ -72,6 +76,10 @@
 
             </div>
 
+
+            <!-- ================================= -->
+            <!-- NOMBRE -->
+            <!-- ================================= -->
 
             <div class="campo">
 
@@ -98,6 +106,10 @@
 
             </div>
 
+
+            <!-- ================================= -->
+            <!-- PRECIO -->
+            <!-- ================================= -->
 
             <div class="campo">
 
@@ -127,6 +139,10 @@
             </div>
 
 
+            <!-- ================================= -->
+            <!-- CATEGORÍA -->
+            <!-- ================================= -->
+
             <div class="campo">
 
                 <label>
@@ -141,9 +157,7 @@
 
                 } @else {
 
-                    <select
-                        formControlName="categoria_id"
-                    >
+                    <select formControlName="categoria_id">
 
                         <option value="">
                             Seleccione una categoría
@@ -154,15 +168,25 @@
                             track categoria.categoria_id
                         ) {
 
-                            <option
-                                [value]="categoria.categoria_id"
-                            >
+                            <option [value]="categoria.categoria_id">
                                 {{ categoria.categoria_nombre }}
                             </option>
 
                         }
 
                     </select>
+
+                }
+
+
+                @if (
+                    formulario.controls.categoria_id.touched &&
+                    formulario.controls.categoria_id.invalid
+                ) {
+
+                    <small class="error">
+                        Seleccione una categoría.
+                    </small>
 
                 }
 
@@ -175,8 +199,147 @@
 
                 }
 
+
+                <!-- ================================= -->
+                <!-- BOTÓN NUEVA CATEGORÍA -->
+                <!-- ================================= -->
+
+                <button
+                    type="button"
+                    class="btn-link"
+                    (click)="alternarNuevaCategoria()"
+                >
+                    + Agregar nueva categoría
+                </button>
+
+
+                @if (mensajeCategoria()) {
+
+                    <small class="mensaje-categoria">
+                        {{ mensajeCategoria() }}
+                    </small>
+
+                }
+
+
+                <!-- ================================= -->
+                <!-- FORMULARIO NUEVA CATEGORÍA -->
+                <!-- ================================= -->
+
+                @if (mostrarNuevaCategoria()) {
+
+                    <div
+                        class="nueva-categoria"
+                        [formGroup]="formularioCategoria"
+                    >
+
+                        <h3>
+                            Nueva categoría
+                        </h3>
+
+
+                        <!-- NOMBRE CATEGORÍA -->
+
+                        <div class="campo">
+
+                            <label>
+                                Nombre *
+                            </label>
+
+                            <input
+                                type="text"
+                                formControlName="nombre"
+                                placeholder="Nombre de la categoría"
+                            >
+
+                            @if (
+                                formularioCategoria.controls.nombre.touched &&
+                                formularioCategoria.controls.nombre.invalid
+                            ) {
+
+                                <small class="error">
+                                    Ingrese un nombre válido.
+                                </small>
+
+                            }
+
+                        </div>
+
+
+                        <!-- DESCRIPCIÓN CATEGORÍA -->
+
+                        <div class="campo">
+
+                            <label>
+                                Descripción
+                            </label>
+
+                            <textarea
+                                rows="3"
+                                formControlName="descripcion"
+                                placeholder="Descripción de la categoría"
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- ERROR NUEVA CATEGORÍA -->
+
+                        @if (errorNuevaCategoria()) {
+
+                            <small class="error">
+                                {{ errorNuevaCategoria() }}
+                            </small>
+
+                        }
+
+
+                        <!-- BOTONES NUEVA CATEGORÍA -->
+
+                        <div class="acciones-categoria">
+
+                            <button
+                                type="button"
+                                class="btn-secondary"
+                                (click)="alternarNuevaCategoria()"
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn-primary"
+                                [disabled]="
+                                    formularioCategoria.invalid ||
+                                    guardandoCategoria()
+                                "
+                                (click)="guardarCategoria()"
+                            >
+
+                                @if (guardandoCategoria()) {
+
+                                    Guardando...
+
+                                } @else {
+
+                                    Guardar categoría
+
+                                }
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                }
+
             </div>
 
+
+            <!-- ================================= -->
+            <!-- COLOR -->
+            <!-- ================================= -->
 
             <div class="campo">
 
@@ -193,6 +356,10 @@
             </div>
 
 
+            <!-- ================================= -->
+            <!-- TALLA / TAMAÑO -->
+            <!-- ================================= -->
+
             <div class="campo">
 
                 <label>
@@ -208,6 +375,10 @@
             </div>
 
 
+            <!-- ================================= -->
+            <!-- DESCRIPCIÓN DEL PRODUCTO -->
+            <!-- ================================= -->
+
             <div class="campo campo-completo">
 
                 <label>
@@ -220,8 +391,23 @@
                     placeholder="Descripción del producto"
                 ></textarea>
 
+                @if (
+                    formulario.controls.descripcion.touched &&
+                    formulario.controls.descripcion.invalid
+                ) {
+
+                    <small class="error">
+                        La descripción no puede superar los 300 caracteres.
+                    </small>
+
+                }
+
             </div>
 
+
+            <!-- ================================= -->
+            <!-- PRODUCTO DESTACADO -->
+            <!-- ================================= -->
 
             <div class="campo-check campo-completo">
 
@@ -237,8 +423,39 @@
 
             </div>
 
+
         </div>
 
+
+        <!-- ===================================== -->
+        <!-- MENSAJE DE ÉXITO -->
+        <!-- ===================================== -->
+
+        @if (mensajeExito()) {
+
+            <div class="mensaje exito">
+                {{ mensajeExito() }}
+            </div>
+
+        }
+
+
+        <!-- ===================================== -->
+        <!-- MENSAJE DE ERROR -->
+        <!-- ===================================== -->
+
+        @if (mensajeError()) {
+
+            <div class="mensaje error-api">
+                {{ mensajeError() }}
+            </div>
+
+        }
+
+
+        <!-- ===================================== -->
+        <!-- BOTONES PRINCIPALES -->
+        <!-- ===================================== -->
 
         <div class="acciones">
 
@@ -249,15 +466,30 @@
                 Cancelar
             </a>
 
+
             <button
-                type="button"
+                type="submit"
                 class="btn-primary"
-                [disabled]="formulario.invalid"
+                [disabled]="
+                    formulario.invalid ||
+                    guardando()
+                "
             >
-                Guardar producto
+
+                @if (guardando()) {
+
+                    Guardando...
+
+                } @else {
+
+                    Guardar producto
+
+                }
+
             </button>
 
         </div>
+
 
     </form>
 

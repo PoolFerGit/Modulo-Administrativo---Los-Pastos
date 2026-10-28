@@ -110,3 +110,70 @@ export async function buscarProductoCatalogoPorId(
 
     return productos[0];
 }
+
+//registrar categoria en catalogo
+
+export async function registrarCategoriaCatalogo(
+    categoria
+) {
+
+    const {
+        nombre,
+        descripcion
+    } = categoria;
+
+
+    // 1. Comprobar si ya existe una categoría
+    // con el mismo nombre
+    const [categoriasExistentes] =
+        await catalogoPool.query(
+            `SELECT
+                categoria_id,
+                categoria_nombre
+            FROM categoria
+            WHERE LOWER(categoria_nombre)
+                = LOWER(?)`,
+            [nombre]
+        );
+
+
+    // 2. Si existe, no hacemos el INSERT
+    if (categoriasExistentes.length > 0) {
+
+        return {
+            creada: false,
+            categoria:
+                categoriasExistentes[0]
+        };
+
+    }
+
+
+    // 3. Si no existe, crear la categoría
+    const [resultado] =
+        await catalogoPool.query(
+            `INSERT INTO categoria
+            (
+                categoria_nombre,
+                categoria_descripcion
+            )
+            VALUES (?, ?)`,
+            [
+                nombre,
+                descripcion || null
+            ]
+        );
+
+
+    return {
+        creada: true,
+        categoria: {
+            categoria_id:
+                resultado.insertId,
+
+            categoria_nombre:
+                nombre
+        }
+    };
+
+}
