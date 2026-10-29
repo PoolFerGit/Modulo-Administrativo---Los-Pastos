@@ -7,8 +7,10 @@ import ApiError from '../utils/ApiError.js';
 export const obtenerProductos = async (request, response, next) => {
 
     try {
+        const buscar =
+        request.query.buscar || '';
 
-        const productos = await obtenerProductosSincronizados();
+        const productos = await obtenerProductosSincronizados(buscar);
 
         response.status(200).json({
             total: productos.length,

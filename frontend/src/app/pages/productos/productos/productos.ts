@@ -22,6 +22,8 @@ export class Productos implements OnInit {
 
     error = signal('');
 
+    busqueda = signal('');
+
     ngOnInit(): void {
 
         this.cargarProductos();
@@ -29,7 +31,7 @@ export class Productos implements OnInit {
     }
 
 
- cargarProductos(): void {
+ cargarProductos(buscar: string = ''): void {
 
     console.log(
         '1. Iniciando carga de productos'
@@ -41,7 +43,7 @@ export class Productos implements OnInit {
 
 
     this.productosService
-        .obtenerProductos()
+        .obtenerProductos(buscar)
         .subscribe({
 
             next: (respuesta) => {
@@ -77,4 +79,33 @@ export class Productos implements OnInit {
 
         });
 
-}}
+}
+
+buscarProductos(): void {
+
+    this.cargarProductos(this.busqueda());
+
+}
+
+actualizarBusqueda(
+    event: Event
+): void {
+
+    const input =
+        event.target as HTMLInputElement;
+
+
+    this.busqueda.set(
+        input.value
+    );
+
+}
+
+limpiarBusqueda(): void {
+
+    this.busqueda.set('');
+
+    this.cargarProductos();
+
+}
+}

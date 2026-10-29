@@ -1,9 +1,11 @@
 import pool from '../config/db.js';
 
-export async function listarProductos() {
+export async function listarProductos(
+    buscar = ''
+) {
 
-    const [productos] = await pool.query(
-        `SELECT
+    let consulta = `
+        SELECT
             id_producto,
             tipo_producto,
             nombre,
@@ -13,13 +15,45 @@ export async function listarProductos() {
             talla_tamano,
             imagen,
             activo
-        FROM productos 
-        ORDER BY id_producto ASC`
-    );
+        FROM productos
+    `;
+
+
+    const parametros = [];
+
+
+    if (
+        buscar &&
+        buscar.trim() !== ''
+    ) {
+
+        consulta += `
+            WHERE LOWER(nombre)
+            LIKE LOWER(?)
+        `;
+
+        parametros.push(
+            `%${buscar.trim()}%`
+        );
+
+    }
+
+
+    consulta += `
+        ORDER BY id_producto ASC
+    `;
+
+
+    const [productos] =
+        await pool.query(
+            consulta,
+            parametros
+        );
+
 
     return productos;
-}
 
+}
 
 //postear productos:
 export async function registrarProducto(

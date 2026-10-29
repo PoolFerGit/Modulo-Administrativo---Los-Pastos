@@ -94,10 +94,10 @@ export async function crearProductoSincronizado(
 
 //Obtener productos:
 
-export async function obtenerProductosSincronizados() {
+export async function obtenerProductosSincronizados(buscar = '') {
 
     const productosAdmin =
-        await listarProductos();
+        await listarProductos(buscar);
 
     const productosCatalogo =
         await listarProductosCatalogo();

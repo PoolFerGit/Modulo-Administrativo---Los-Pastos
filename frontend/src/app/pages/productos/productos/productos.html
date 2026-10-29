@@ -15,6 +15,65 @@
 
 }
 
+<div class="productos-header">
+
+    <div>
+
+        <h1>
+            Productos
+        </h1>
+
+        <p>
+            Administración del catálogo
+            de productos.
+        </p>
+
+    </div>
+
+
+    <a
+        routerLink="/productos/nuevo"
+        class="btn-primary"
+    >
+        + Nuevo producto
+    </a>
+
+</div>
+
+<div class="buscador-productos">
+
+    <input
+        type="text"
+        placeholder="Buscar por nombre..."
+        [value]="busqueda()"
+        (input)="actualizarBusqueda($event)"
+        (keyup.enter)="buscarProductos()"
+    >
+
+
+    <button
+        type="button"
+        class="btn-buscar"
+        (click)="buscarProductos()"
+    >
+        Buscar
+    </button>
+
+
+    @if (busqueda()) {
+
+        <button
+            type="button"
+            class="btn-limpiar"
+            (click)="limpiarBusqueda()"
+        >
+            Limpiar
+        </button>
+
+    }
+
+</div>
+
 
 @if (!cargando() && !error()) {
 
@@ -96,20 +155,27 @@
 
                         <td>
 
-                            <a
-                                [routerLink]="[
-                                    '/productos',
-                                    producto.id_producto,
-                                    'editar'
-                                ]"
-                            >
-                                Editar
-                            </a>
+                            <td class="acciones-tabla">
+                                <a
+                                    [routerLink]="[
+                                        '/productos',
+                                        producto.id_producto,
+                                        'editar'
+                                    ]"
+                                    class="btn-editar"
+                                >
+                                    Editar
+                                </a>
+                                    <button
+                                        type="button"
+                                        class="btn-eliminar"
+                                        disabled
+                                        title="Se implementará en la siguiente etapa"
+                                    >
+                                        Eliminar
+                                    </button>
 
-                        </td>
-
-                    </tr>
-
+                                </td>
                 }
 
             </tbody>

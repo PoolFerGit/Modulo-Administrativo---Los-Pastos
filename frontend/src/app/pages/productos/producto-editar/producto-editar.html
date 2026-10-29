@@ -1,39 +1,366 @@
-<h1>Modificar producto</h1>
 
-<div class="form-card">
+<section class="producto-form">
 
-    <label>Nombre</label>
-    <input type="text">
+    <!-- ========================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================= -->
 
-    <label>Descripción</label>
-    <textarea></textarea>
+    <div class="page-header">
 
-    <label>Precio</label>
-    <input type="number">
+        <div>
+            <h1>Modificar producto</h1>
 
-    <label>Categoría</label>
+            <p>
+                Ingresa la información del producto.
+            </p>
+        </div>
 
-    <select>
-        <option>Seleccione una categoría</option>
-        <option>Escolar</option>
-        <option>Trabajo</option>
-        <option>Deportivo</option>
-    </select>
+        <a
+            routerLink="/productos"
+            class="btn-secondary"
+        >
+            Volver
+        </a>
 
-    <label>Tipo de producto</label>
+    </div>
 
-    <select>
-        <option>PRENDA</option>
-        <option>TELA</option>
-    </select>
 
-    <label>
-        <input type="checkbox">
-        Producto destacado
-    </label>
+    <!-- ========================================= -->
+    <!-- FORMULARIO PRINCIPAL -->
+    <!-- ========================================= -->
 
-    <button type="button">
-        Guardar producto
-    </button>
+    <form
+        [formGroup]="formulario"
+        (ngSubmit)="actualizarProducto()"
+        class="form-card"
+    >
 
-</div>
+        <div class="form-grid">
+
+
+            <!-- ================================= -->
+            <!-- TIPO DE PRODUCTO -->
+            <!-- ================================= -->
+
+            <div class="campo">
+
+                <label>
+                    Tipo de producto *
+                </label>
+
+                <select formControlName="tipo_producto">
+
+                    <option value="">
+                        Seleccione
+                    </option>
+
+                    <option value="PRENDA">
+                        Prenda
+                    </option>
+
+                    <option value="TELA">
+                        Tela
+                    </option>
+
+                </select>
+
+                @if (
+                    formulario.controls.tipo_producto.touched &&
+                    formulario.controls.tipo_producto.invalid
+                ) {
+
+                    <small class="error">
+                        Seleccione un tipo de producto.
+                    </small>
+
+                }
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- NOMBRE -->
+            <!-- ================================= -->
+
+            <div class="campo">
+
+                <label>
+                    Nombre *
+                </label>
+
+                <input
+                    type="text"
+                    formControlName="nombre"
+                    placeholder="Nombre del producto"
+                >
+
+                @if (
+                    formulario.controls.nombre.touched &&
+                    formulario.controls.nombre.invalid
+                ) {
+
+                    <small class="error">
+                        Ingrese un nombre válido.
+                    </small>
+
+                }
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- PRECIO -->
+            <!-- ================================= -->
+
+            <div class="campo">
+
+                <label>
+                    Precio *
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    formControlName="precio"
+                    placeholder="0.00"
+                >
+
+                @if (
+                    formulario.controls.precio.touched &&
+                    formulario.controls.precio.invalid
+                ) {
+
+                    <small class="error">
+                        El precio debe ser mayor que cero.
+                    </small>
+
+                }
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- CATEGORÍA -->
+            <!-- ================================= -->
+
+            <div class="campo">
+
+                <label>
+                    Categoría *
+                </label>
+
+                @if (cargandoCategorias()) {
+
+                    <p>
+                        Cargando categorías...
+                    </p>
+
+                } @else {
+
+                    <select formControlName="categoria_id">
+
+                        <option value="">
+                            Seleccione una categoría
+                        </option>
+
+                        @for (
+                            categoria of categorias();
+                            track categoria.categoria_id
+                        ) {
+
+                            <option [value]="categoria.categoria_id">
+                                {{ categoria.categoria_nombre }}
+                            </option>
+
+                        }
+
+                    </select>
+
+                }
+
+
+                @if (
+                    formulario.controls.categoria_id.touched &&
+                    formulario.controls.categoria_id.invalid
+                ) {
+
+                    <small class="error">
+                        Seleccione una categoría.
+                    </small>
+
+                }
+
+
+                @if (errorCategorias()) {
+
+                    <small class="error">
+                        {{ errorCategorias() }}
+                    </small>
+
+                }
+
+
+                
+                
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- COLOR -->
+            <!-- ================================= -->
+
+            <div class="campo">
+
+                <label>
+                    Color
+                </label>
+
+                <input
+                    type="text"
+                    formControlName="color"
+                    placeholder="Ej. Azul"
+                >
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- TALLA / TAMAÑO -->
+            <!-- ================================= -->
+
+            <div class="campo">
+
+                <label>
+                    Talla / tamaño
+                </label>
+
+                <input
+                    type="text"
+                    formControlName="talla_tamano"
+                    placeholder="Ej. M o 20m x 2m"
+                >
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- DESCRIPCIÓN DEL PRODUCTO -->
+            <!-- ================================= -->
+
+            <div class="campo campo-completo">
+
+                <label>
+                    Descripción
+                </label>
+
+                <textarea
+                    rows="4"
+                    formControlName="descripcion"
+                    placeholder="Descripción del producto"
+                ></textarea>
+
+                @if (
+                    formulario.controls.descripcion.touched &&
+                    formulario.controls.descripcion.invalid
+                ) {
+
+                    <small class="error">
+                        La descripción no puede superar los 300 caracteres.
+                    </small>
+
+                }
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- PRODUCTO DESTACADO -->
+            <!-- ================================= -->
+
+            <div class="campo-check campo-completo">
+
+                <input
+                    id="destacado"
+                    type="checkbox"
+                    formControlName="producto_destacado"
+                >
+
+                <label for="destacado">
+                    Mostrar como producto destacado
+                </label>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- MENSAJE DE ÉXITO -->
+        <!-- ===================================== -->
+
+        @if (mensajeExito()) {
+
+            <div class="mensaje exito">
+                {{ mensajeExito() }}
+            </div>
+
+        }
+
+
+        <!-- ===================================== -->
+        <!-- MENSAJE DE ERROR -->
+        <!-- ===================================== -->
+
+        @if (mensajeError()) {
+
+            <div class="mensaje error-api">
+                {{ mensajeError() }}
+            </div>
+
+        }
+
+
+        <!-- ===================================== -->
+        <!-- BOTONES PRINCIPALES -->
+        <!-- ===================================== -->
+
+        <div class="acciones">
+
+            <a
+                routerLink="/productos"
+                class="btn-secondary"
+            >
+                Cancelar
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn-primary"
+                [disabled]="
+                    formulario.invalid ||
+                    guardando()
+                "
+            >
+
+                @if (guardando()) {
+
+                    Guardando...
+
+                } @else {
+
+                    Guardar producto
+
+                }
+
+            </button>
+
+        </div>
+
+
+    </form>
+
+</section>

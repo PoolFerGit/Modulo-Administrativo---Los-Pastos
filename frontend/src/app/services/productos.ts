@@ -4,13 +4,15 @@ import {
 } from '@angular/core';
 
 import {
-    HttpClient
+    HttpClient,
+    HttpParams
 } from '@angular/common/http';
 
 import {
     RespuestaProductos, 
     ProductoRegistro,
-    RespuestaCrearProducto
+    RespuestaCrearProducto,
+    Producto
 } from '../models/producto';
 
 import {
@@ -34,11 +36,54 @@ export class ProductosService {
         'http://localhost:3001/api/categorias';
 
 
-    obtenerProductos() {
+    obtenerProductos(buscar: string = '') {
 
-        return this.http.get<RespuestaProductos>(
-            this.apiUrl
+    let params =
+        new HttpParams();
+
+
+    if (buscar.trim() !== '') {
+
+        params =
+            params.set(
+                'buscar',
+                buscar.trim()
+            );
+
+    }
+    console.log(
+        'Buscando:',
+        buscar
+    );
+
+    return this.http
+        .get<RespuestaProductos>(
+            this.apiUrl,
+            { params }
         );
+    }
+
+    obtenerProductoPorId(id: number) {
+
+    return this.http.get<{
+        producto: Producto
+    }>(
+        `${this.apiUrl}/${id}`
+    );
+
+    }
+    
+    actualizarProducto(
+        id: number,
+        producto: ProductoRegistro) {
+
+    return this.http.put<{
+        mensaje: string;
+        producto?: Producto;
+    }>(
+        `${this.apiUrl}/${id}`,
+        producto
+    );
 
     }
 
