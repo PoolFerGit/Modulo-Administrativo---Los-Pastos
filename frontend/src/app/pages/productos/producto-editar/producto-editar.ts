@@ -70,11 +70,12 @@ export class ProductoEditar
 
     categorias =
         signal<Categoria[]>([]);
-        errorCategorias =
+
+    errorCategorias =
         signal('');
 
     cargandoCategorias =
-    signal(true);
+        signal(true);
 
     cargandoProducto =
         signal(true);
@@ -101,6 +102,12 @@ export class ProductoEditar
 
     imagenActual =
         signal<string | null>(null);
+    
+    activoProducto =
+        signal(false);
+
+    cambiandoEstado =   
+        signal(false);
 
 
     formulario =
@@ -188,30 +195,57 @@ export class ProductoEditar
 
     cargarCategorias(): void {
 
-        this.productosService
-            .obtenerCategorias()
-            .subscribe({
+    this.cargandoCategorias.set(true);
 
-                next: (respuesta) => {
+    this.errorCategorias.set('');
 
-                    this.categorias.set(
-                        respuesta.categorias
-                    );
 
-                },
+    this.productosService
+        .obtenerCategorias()
+        .subscribe({
 
-                error: (error) => {
+            next: (respuesta) => {
 
-                    console.error(
-                        'Error al cargar categorías:',
-                        error
-                    );
+                console.log(
+                    'Categorías recibidas:',
+                    respuesta
+                );
 
-                }
 
-            });
+                this.categorias.set(
+                    respuesta.categorias
+                );
 
-    }
+
+                this.cargandoCategorias.set(
+                    false
+                );
+
+            },
+
+
+            error: (error) => {
+
+                console.error(
+                    'Error al cargar categorías:',
+                    error
+                );
+
+
+                this.errorCategorias.set(
+                    'No fue posible cargar las categorías.'
+                );
+
+
+                this.cargandoCategorias.set(
+                    false
+                );
+
+            }
+
+        });
+
+}
 
 
     cargarProducto(): void {
@@ -231,6 +265,10 @@ export class ProductoEditar
 
                     const producto =
                         respuesta.producto;
+
+                    this.activoProducto.set(
+                        Boolean(producto.activo)
+                    );
 
 
                     this.imagenActual.set(
@@ -418,6 +456,95 @@ export class ProductoEditar
                 }
 
             });
+
+    }
+
+
+    cambiarEstado(): void {
+
+    const nuevoEstado =
+        !this.activoProducto();
+
+
+    this.cambiandoEstado.set(true);
+
+    this.mensajeExito.set('');
+
+    this.mensajeError.set('');
+
+
+    this.productosService
+        .cambiarEstadoProducto(
+            this.idProducto,
+            nuevoEstado
+        )
+        .subscribe({
+
+            next: () => {
+
+                this.activoProducto.set(
+                    nuevoEstado
+                );
+
+
+                this.mensajeExito.set(
+
+                    nuevoEstado
+                        ? 'Producto activado correctamente.'
+                        : 'Producto desactivado correctamente.'
+
+                );
+
+
+                this.cambiandoEstado.set(
+                    false
+                );
+
+            },
+
+
+            error: (
+                error: HttpErrorResponse
+            ) => {
+
+                console.error(
+                    'Error al cambiar el estado:',
+                    error
+                );
+
+
+                if (
+                    error.status === 0
+                ) {
+
+                    this.mensajeError.set(
+                        'No fue posible conectar con el servidor.'
+                    );
+
+                } else if (
+                    error.status === 404
+                ) {
+
+                    this.mensajeError.set(
+                        'El producto ya no existe.'
+                    );
+
+                } else {
+
+                    this.mensajeError.set(
+                        'No fue posible cambiar el estado del producto.'
+                    );
+
+                }
+
+
+                this.cambiandoEstado.set(
+                    false
+                );
+
+            }
+
+        });
 
     }
 

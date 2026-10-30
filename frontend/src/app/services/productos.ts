@@ -127,6 +127,19 @@ crearProducto(
         );
 
 }
+cambiarEstadoProducto(id: number, activo: boolean) {
+
+    return this.http.patch<{
+        mensaje: string;
+    }>(
+        `${this.apiUrl}/${id}/estado`,
+        {
+            activo: activo
+        }
+    );
+
+}
+
 
 }
 

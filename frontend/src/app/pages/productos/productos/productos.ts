@@ -24,6 +24,7 @@ export class Productos implements OnInit {
 
     busqueda = signal('');
 
+
     ngOnInit(): void {
 
         this.cargarProductos();

@@ -24,6 +24,50 @@
 
     </div>
 
+    @if (!cargando()) {
+
+    <div class="estado-producto">
+
+        <div class="estado-info">
+
+            <span class="estado-label">
+                Estado actual:
+            </span>
+
+            @if (activoProducto()) {
+
+                <span class="estado-texto activo">
+                    Activo
+                </span>
+
+            } @else {
+
+                <span class="estado-texto inactivo">
+                    Inactivo
+                </span>
+
+            }
+
+        </div>
+
+
+        <label class="switch">
+
+            <input
+                type="checkbox"
+                [checked]="activoProducto()"
+                [disabled]="cambiandoEstado()"
+                (change)="cambiarEstado()"
+            >
+
+            <span class="slider"></span>
+
+        </label>
+
+    </div>
+
+}
+
 
     <!-- ========================================= -->
     <!-- FORMULARIO PRINCIPAL -->
