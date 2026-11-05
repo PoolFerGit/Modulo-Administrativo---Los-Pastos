@@ -59,6 +59,8 @@ export interface ProductoRegistro {
 
     producto_destacado: boolean;
 
+    activo?: boolean;
+
 }
 
 

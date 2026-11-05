@@ -428,6 +428,49 @@
 
 
         <!-- ===================================== -->
+         <!-- ESTADO DEL PRODUCTO -->
+        <!-- ===================================== -->
+         <div class="estado-producto campo-completo">
+
+        <div class="estado-info">
+
+           <span class="estado-label">
+                Estado inicial:
+            </span>
+
+            @if (
+                formulario.controls.activo.value
+            ) {
+
+                <span class="estado-texto activo">
+                    Activo
+                </span>
+
+            } @else {
+
+                <span class="estado-texto inactivo">
+                    Inactivo
+                </span>
+
+            }   
+
+        </div>
+
+
+       <label class="switch">
+
+         <input
+                type="checkbox"
+                formControlName="activo"
+           >
+
+           <span class="slider"></span>
+
+     </label>
+
+    </div>
+
+        <!-- ===================================== -->
         <!-- MENSAJE DE ÉXITO -->
         <!-- ===================================== -->
 

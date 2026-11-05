@@ -152,6 +152,10 @@ export class ProductoCrear
 
             producto_destacado: [
                 false
+            ],
+
+            activo: [
+             true
             ]
 
         });
@@ -456,7 +460,12 @@ export class ProductoCrear
             producto_destacado:
                 Boolean(
                     datos.producto_destacado
-                )
+                ),
+            
+            activo:
+                Boolean(
+                     datos.activo
+               )
 
         };
 

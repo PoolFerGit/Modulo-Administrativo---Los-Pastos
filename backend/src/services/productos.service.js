@@ -68,7 +68,8 @@ export async function registrarProducto(
         descripcion,
         precio,
         talla_tamano,
-        imagen
+        imagen,
+        activo = true
     } = producto;
 
     const [resultado] = await pool.query(
@@ -81,9 +82,10 @@ export async function registrarProducto(
             descripcion,
             precio,
             talla_tamano,
-            imagen
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            imagen,
+            activo
+            )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             idProducto,
             tipo_producto,
@@ -92,7 +94,8 @@ export async function registrarProducto(
             descripcion,
             precio,
             talla_tamano,
-            imagen
+            imagen,
+            activo
         ]
     );
 
