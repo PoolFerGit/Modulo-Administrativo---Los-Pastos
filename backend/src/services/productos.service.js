@@ -183,3 +183,21 @@ export async function actualizarEstadoProductoID(idProducto, activo)
 
     return resultado;
 }
+
+export async function eliminarProductoAdmin(
+    idProducto
+) {
+
+    const [resultado] =
+        await pool.query(
+            `DELETE FROM productos
+            WHERE id_producto = ?`,
+            [
+                idProducto
+            ]
+        );
+
+
+    return resultado;
+
+}

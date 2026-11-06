@@ -140,6 +140,18 @@ cambiarEstadoProducto(id: number, activo: boolean) {
 
 }
 
+eliminarProducto(
+    id: number
+) {
+
+    return this.http.delete<{
+        mensaje: string;
+    }>(
+        `${this.apiUrl}/${id}`
+    );
+
+}
+
 
 }
 

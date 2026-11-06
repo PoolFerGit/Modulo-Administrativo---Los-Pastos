@@ -1,6 +1,6 @@
-import {buscarProductoPorId, registrarProducto, actualizarProductoPorId, listarProductos} from './productos.service.js';
+import {buscarProductoPorId, registrarProducto, actualizarProductoPorId, listarProductos, eliminarProductoAdmin} from './productos.service.js';
 
-import {listarCategoriasCatalogo, registrarProductoCatalogo, actualizarProductoCatalogo, buscarProductoCatalogoPorId, listarProductosCatalogo} from './catalogo.service.js';
+import {listarCategoriasCatalogo, registrarProductoCatalogo, actualizarProductoCatalogo, buscarProductoCatalogoPorId, listarProductosCatalogo, verificarDependenciasProductoCatalogo, eliminarProductoCatalogo} from './catalogo.service.js';
 
 import {mapearProductoAGissi} from '../mappers/producto.mapper.js';
 
@@ -198,6 +198,118 @@ export async function obtenerProductoSincronizadoPorId(
                 productoCatalogo?.producto_destacado
             )
 
+    };
+
+}
+
+export async function eliminarProductoSincronizado(
+    idProducto
+) {
+
+    // ---------------------------------
+    // 1. Buscar producto en ADMIN
+    // ---------------------------------
+
+    const productoAdmin =
+        await buscarProductoPorId(
+            idProducto
+        );
+
+
+    // ---------------------------------
+    // 2. Buscar producto en GISSI
+    // ---------------------------------
+
+    const productoCatalogo =
+        await buscarProductoCatalogoPorId(
+            idProducto
+        );
+
+
+    // ---------------------------------
+    // 3. No existe en ninguna base
+    // ---------------------------------
+
+    if (
+        !productoAdmin &&
+        !productoCatalogo
+    ) {
+
+        return {
+            eliminado: false,
+            motivo: 'NO_ENCONTRADO'
+        };
+
+    }
+
+
+    // ---------------------------------
+    // 4. Existe solo en una base
+    // ---------------------------------
+
+    if (
+        !productoAdmin ||
+        !productoCatalogo
+    ) {
+
+        return {
+            eliminado: false,
+            motivo: 'INCONSISTENCIA'
+        };
+
+    }
+
+
+    // ---------------------------------
+    // 5. Revisar relaciones
+    // ---------------------------------
+
+    const dependencias =
+        await verificarDependenciasProductoCatalogo(
+            idProducto
+        );
+
+
+    if (
+        dependencias.imagenes > 0 ||
+        dependencias.inventarios > 0
+    ) {
+
+        return {
+
+            eliminado: false,
+
+            motivo:
+                'DEPENDENCIAS',
+
+            dependencias:
+                dependencias
+
+        };
+
+    }
+
+
+    // ---------------------------------
+    // 6. Eliminar GISSI
+    // ---------------------------------
+
+    await eliminarProductoCatalogo(
+        idProducto
+    );
+
+
+    // ---------------------------------
+    // 7. Eliminar ADMIN
+    // ---------------------------------
+
+    await eliminarProductoAdmin(
+        idProducto
+    );
+
+
+    return {
+        eliminado: true
     };
 
 }

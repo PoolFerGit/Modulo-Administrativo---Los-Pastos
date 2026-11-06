@@ -1,5 +1,5 @@
 import { listarProductos, buscarProductoPorId, actualizarEstadoProductoID } from '../services/productos.service.js';
-import { crearProductoSincronizado, actualizarProductoSincronizado, obtenerProductoSincronizadoPorId, obtenerProductosSincronizados } from '../services/sincronizacionProductos.service.js';
+import { crearProductoSincronizado, actualizarProductoSincronizado, obtenerProductoSincronizadoPorId, obtenerProductosSincronizados, eliminarProductoSincronizado } from '../services/sincronizacionProductos.service.js';
 import { validarProducto, validarEstadoProducto } from '../validators/productos.validator.js';
 import ApiError from '../utils/ApiError.js';
 
@@ -204,6 +204,75 @@ export const cambiarEstadoProducto = async (request, response, next) => {
             id_producto: idProducto,
             activo: activo
         });
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+export const eliminarProducto = async (
+    request,
+    response,
+    next
+) => {
+
+    try {
+
+        const resultado =
+            await eliminarProductoSincronizado(
+                request.idProducto
+            );
+
+
+        if (
+            resultado.motivo ===
+            'NO_ENCONTRADO'
+        ) {
+
+            throw new ApiError(
+                404,
+                'Producto no encontrado.'
+            );
+
+        }
+
+
+        if (
+            resultado.motivo ===
+            'INCONSISTENCIA'
+        ) {
+
+            throw new ApiError(
+                409,
+                'El producto presenta una inconsistencia entre las bases de datos.'
+            );
+
+        }
+
+
+        if (
+            resultado.motivo ===
+            'DEPENDENCIAS'
+        ) {
+
+            throw new ApiError(
+                409,
+                'No es posible eliminar el producto porque posee información relacionada.'
+            );
+
+        }
+
+
+        response.status(200).json({
+
+            mensaje:
+                'Producto eliminado correctamente.'
+
+        });
+
 
     } catch (error) {
 

@@ -49,3 +49,28 @@
 
     font-weight: 600;
 }
+
+.btn-eliminar {
+    padding: 7px 12px;
+
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+
+    background-color: #fff5f5;
+
+    color: #b42318;
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+.btn-eliminar:hover:not(:disabled) {
+    background-color: #fee4e2;
+}
+
+.btn-eliminar:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+}

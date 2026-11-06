@@ -18,12 +18,17 @@ export class Productos implements OnInit {
 
     productos = signal<Producto[]>([]);
 
+    productoEliminando = signal<number | null>(null);
+
     cargando = signal(true);
 
     error = signal('');
 
     busqueda = signal('');
 
+    mensajeExito = signal('');
+    
+    mensajeError = signal('');
 
     ngOnInit(): void {
 
@@ -109,4 +114,115 @@ limpiarBusqueda(): void {
     this.cargarProductos();
 
 }
+
+eliminarProducto(
+    producto: Producto
+): void {
+
+    const confirmar =
+        window.confirm(
+            `¿Desea eliminar "${producto.nombre}"? Esta acción no se puede deshacer.`
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+    this.productoEliminando.set(
+        producto.id_producto
+    );
+
+
+    this.mensajeExito.set('');
+
+    this.mensajeError.set('');
+
+
+    this.productosService
+        .eliminarProducto(
+            producto.id_producto
+        )
+        .subscribe({
+
+            next: () => {
+
+                this.mensajeExito.set(
+                    'Producto eliminado correctamente.'
+                );
+
+
+                this.productoEliminando.set(
+                    null
+                );
+
+
+                // Volvemos a cargar la tabla
+                // manteniendo la búsqueda actual
+
+                this.cargarProductos(
+                    this.busqueda()
+                );
+
+            },
+
+
+            error: (error) => {
+
+                console.error(
+                    'Error al eliminar producto:',
+                    error
+                );
+
+
+                if (
+                    error.status === 0
+                ) {
+
+                    this.mensajeError.set(
+                        'No fue posible conectar con el servidor.'
+                    );
+
+                } else if (
+                    error.status === 404
+                ) {
+
+                    this.mensajeError.set(
+                        'El producto ya no existe.'
+                    );
+
+                } else if (
+                    error.status === 409
+                ) {
+
+                    this.mensajeError.set(
+
+                        error.error?.error ||
+
+                        'No es posible eliminar el producto porque posee información relacionada.'
+
+                    );
+
+                } else {
+
+                    this.mensajeError.set(
+                        'No fue posible eliminar el producto.'
+                    );
+
+                }
+
+
+                this.productoEliminando.set(
+                    null
+                );
+
+            }
+
+        });
+
+}
+
+
 }

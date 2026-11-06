@@ -74,6 +74,27 @@
 
 </div>
 
+@if (mensajeExito()) {
+
+    <div class="mensaje exito">
+
+        {{ mensajeExito() }}
+
+    </div>
+
+}
+
+
+@if (mensajeError()) {
+
+    <div class="mensaje error-api">
+
+        {{ mensajeError() }}
+
+    </div>
+
+}
+
 
 @if (!cargando() && !error()) {
 
@@ -167,13 +188,31 @@
                                     Editar
                                 </a>
                                     <button
-                                        type="button"
-                                        class="btn-eliminar"
-                                        disabled
-                                        title="Se implementará en la siguiente etapa"
-                                    >
+                                    type="button"
+                                    class="btn-eliminar"
+                                    [disabled]="
+                                        productoEliminando()
+                                        === producto.id_producto
+                                    "
+                                    (click)="
+                                        eliminarProducto(producto)
+                                    "
+                                     >
+
+                                    @if (
+                                        productoEliminando()
+                                        === producto.id_producto
+                                    ) {
+
+                                        Eliminando...
+
+                                    } @else {
+
                                         Eliminar
-                                    </button>
+
+                                    }
+
+                                </button>
 
                                 </td>
                 }

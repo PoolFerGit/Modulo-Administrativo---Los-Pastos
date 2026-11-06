@@ -1,5 +1,4 @@
-import catalogoPool
-    from '../config/dbCatalogo.js';
+import catalogoPool from '../config/dbCatalogo.js';
 
 export async function listarCategoriasCatalogo() {
 
@@ -175,5 +174,64 @@ export async function registrarCategoriaCatalogo(
                 nombre
         }
     };
+}
+
+export async function verificarDependenciasProductoCatalogo(
+    idProducto
+) {
+
+    const [resultado] =
+        await catalogoPool.query(
+            `SELECT
+
+                (
+                    SELECT COUNT(*)
+                    FROM producto_imagen
+                    WHERE producto_id = ?
+                ) AS imagenes,
+
+                (
+                    SELECT COUNT(*)
+                    FROM inventario
+                    WHERE producto_id = ?
+                ) AS inventarios`,
+            [
+                idProducto,
+                idProducto
+            ]
+        );
+
+
+    return {
+
+        imagenes:
+            Number(
+                resultado[0].imagenes
+            ),
+
+        inventarios:
+            Number(
+                resultado[0].inventarios
+            )
+
+    };
+
+}
+
+export async function eliminarProductoCatalogo(
+    idProducto
+) {
+
+    const [resultado] =
+        await catalogoPool.query(
+            `DELETE FROM producto
+            WHERE producto_id = ?`,
+            [
+                idProducto
+            ]
+        );
+
+
+    return resultado;
 
 }
