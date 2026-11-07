@@ -68,6 +68,8 @@ export interface RespuestaCrearProducto {
 
     mensaje: string;
 
-    id_producto?: number;
+    producto: {
+        id_producto: number;
+    };
 
 }

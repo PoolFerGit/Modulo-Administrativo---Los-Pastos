@@ -58,8 +58,6 @@ export class ProductoEditar
     private route =
         inject(ActivatedRoute);
 
-    private router =
-        inject(Router);
 
     private productosService =
         inject(ProductosService);
@@ -76,16 +74,6 @@ export class ProductoEditar
 
     cargandoCategorias =
         signal(true);
-
-    cargandoProducto =
-        signal(true);
-
-    errorProducto =
-        signal('');
-
-    errorCargaProducto =
-        signal('');
-
 
     cargando =
         signal(true);

@@ -64,32 +64,53 @@ export async function crearProductoSincronizado(
     producto
 ) {
 
-    // 1. Traducimos la estructura
     const productoGissi =
         mapearProductoAGissi(
             producto
         );
 
-    // 2. Guardamos en la base del catálogo
     const resultadoCatalogo =
         await registrarProductoCatalogo(
             productoGissi
         );
 
-    // 3. Recuperamos el ID creado por GISSI
     const idProducto =
         resultadoCatalogo.insertId;
 
-    // 4. Guardamos en ADMIN con ese mismo ID
-    await registrarProducto(
-        idProducto,
-        producto
-    );
 
-    // 5. Retornamos el ID compartido
+    try {
+
+        await registrarProducto(
+            idProducto,
+            producto
+        );
+
+    } catch (error) {
+
+        try {
+
+            await eliminarProductoCatalogo(
+                idProducto
+            );
+
+        } catch (errorRollback) {
+
+            console.error(
+                'No fue posible revertir el producto en GISSI:',
+                errorRollback
+            );
+
+        }
+
+        throw error;
+
+    }
+
+
     return {
         id_producto: idProducto
     };
+
 }
 
 //Obtener productos:

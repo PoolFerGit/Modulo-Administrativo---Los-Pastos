@@ -117,107 +117,113 @@
 
             <tbody>
 
-                @for (
-                    producto of productos();
-                    track producto.id_producto
-                ) {
+    @for (
+        producto of productos();
+        track producto.id_producto
+    ) {
 
-                    <tr>
+        <tr>
 
-                        <td>
-                            {{ producto.id_producto }}
-                        </td>
+            <td>
+                {{ producto.id_producto }}
+            </td>
 
-                        <td>
-                            {{ producto.nombre }}
-                        </td>
+            <td>
+                {{ producto.nombre }}
+            </td>
 
-                        <td>
-                            {{ producto.tipo_producto }}
-                        </td>
+            <td>
+                {{ producto.tipo_producto }}
+            </td>
 
-                        <td>
-                            {{ producto.categoria_nombre }}
-                        </td>
+            <td>
+                {{ producto.categoria_nombre || 'Sin categoría' }}
+            </td>
 
-                        <td>
-                            ${{ producto.precio }}
-                        </td>
+            <td>
+                ${{ producto.precio }}
+            </td>
 
-                        <td>
+            <td>
 
-                            @if (producto.activo) {
-                                
-                                <span class="activo">
-                                    Activo
-                                </span>
+                @if (producto.activo) {
 
-                            } @else {
+                    <span class="activo">
+                        Activo
+                    </span>
 
-                                <span class="inactivo">
-                                    Inactivo
-                                </span>
+                } @else {
 
-                            }
+                    <span class="inactivo">
+                        Inactivo
+                    </span>
 
-                        </td>
-
-                        <td>
-
-                            @if (
-                                producto.producto_destacado
-                            ) {
-                                Sí
-                            } @else {
-                                No
-                            }
-
-                        </td>
-
-                        <td>
-
-                            <td class="acciones-tabla">
-                                <a
-                                    [routerLink]="[
-                                        '/productos',
-                                        producto.id_producto,
-                                        'editar'
-                                    ]"
-                                    class="btn-editar"
-                                >
-                                    Editar
-                                </a>
-                                    <button
-                                    type="button"
-                                    class="btn-eliminar"
-                                    [disabled]="
-                                        productoEliminando()
-                                        === producto.id_producto
-                                    "
-                                    (click)="
-                                        eliminarProducto(producto)
-                                    "
-                                     >
-
-                                    @if (
-                                        productoEliminando()
-                                        === producto.id_producto
-                                    ) {
-
-                                        Eliminando...
-
-                                    } @else {
-
-                                        Eliminar
-
-                                    }
-
-                                </button>
-
-                                </td>
                 }
 
-            </tbody>
+            </td>
+
+            <td>
+
+                @if (producto.producto_destacado) {
+                    Sí
+                } @else {
+                    No
+                }
+
+            </td>
+
+            <td class="acciones-tabla">
+
+                <a
+                    [routerLink]="[
+                        '/productos',
+                        producto.id_producto,
+                        'editar'
+                    ]"
+                    class="btn-editar"
+                >
+                    Editar
+                </a>
+
+                <button
+                    type="button"
+                    class="btn-eliminar"
+                    [disabled]="
+                        productoEliminando() ===
+                        producto.id_producto
+                    "
+                    (click)="eliminarProducto(producto)"
+                >
+
+                    @if (
+                        productoEliminando() ===
+                        producto.id_producto
+                    ) {
+                        Eliminando...
+                    } @else {
+                        Eliminar
+                    }
+
+                </button>
+
+            </td>
+
+        </tr>
+
+    } @empty {
+
+        <tr>
+            <td
+                colspan="8"
+                class="sin-resultados"
+            >
+                No se encontraron productos.
+            </td>
+        </tr>
+
+    }
+
+</tbody>
 
         </table>
 

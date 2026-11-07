@@ -32,8 +32,7 @@ export class ProductosService {
         'http://localhost:3001/api/productos';
     private apiUrlCategorias =
         'http://localhost:3001/api/categorias';
-    private categoriasUrl =
-        'http://localhost:3001/api/categorias';
+
 
 
     obtenerProductos(buscar: string = '') {
@@ -110,7 +109,7 @@ export class ProductosService {
             categoria_nombre: string;
         };
     }>(
-        this.categoriasUrl,
+        this.apiUrlCategorias,
         categoria
     );
 
