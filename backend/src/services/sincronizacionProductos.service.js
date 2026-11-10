@@ -227,9 +227,6 @@ export async function eliminarProductoSincronizado(
     idProducto
 ) {
 
-    // ---------------------------------
-    // 1. Buscar producto en ADMIN
-    // ---------------------------------
 
     const productoAdmin =
         await buscarProductoPorId(
@@ -237,19 +234,12 @@ export async function eliminarProductoSincronizado(
         );
 
 
-    // ---------------------------------
-    // 2. Buscar producto en GISSI
-    // ---------------------------------
-
     const productoCatalogo =
         await buscarProductoCatalogoPorId(
             idProducto
         );
 
 
-    // ---------------------------------
-    // 3. No existe en ninguna base
-    // ---------------------------------
 
     if (
         !productoAdmin &&
@@ -263,11 +253,6 @@ export async function eliminarProductoSincronizado(
 
     }
 
-
-    // ---------------------------------
-    // 4. Existe solo en una base
-    // ---------------------------------
-
     if (
         !productoAdmin ||
         !productoCatalogo
@@ -280,10 +265,6 @@ export async function eliminarProductoSincronizado(
 
     }
 
-
-    // ---------------------------------
-    // 5. Revisar relaciones
-    // ---------------------------------
 
     const dependencias =
         await verificarDependenciasProductoCatalogo(
@@ -311,18 +292,11 @@ export async function eliminarProductoSincronizado(
     }
 
 
-    // ---------------------------------
-    // 6. Eliminar GISSI
-    // ---------------------------------
-
     await eliminarProductoCatalogo(
         idProducto
     );
 
 
-    // ---------------------------------
-    // 7. Eliminar ADMIN
-    // ---------------------------------
 
     await eliminarProductoAdmin(
         idProducto
@@ -331,6 +305,101 @@ export async function eliminarProductoSincronizado(
 
     return {
         eliminado: true
+    };
+
+}
+
+export async function detectarCategoriasFaltantes(
+    productos
+) {
+
+
+    const categoriasExistentes =
+        await listarCategoriasCatalogo();
+
+
+    const nombresExistentes =
+        categoriasExistentes.map(
+            categoria =>
+                String(
+                    categoria.categoria_nombre
+                )
+                    .trim()
+                    .toLowerCase()
+        );
+
+
+    const categoriasExcel =
+        productos
+            .map(
+                producto =>
+                    producto.categoria
+            )
+            .filter(
+                categoria =>
+                    categoria
+            );
+
+
+    const categoriasUnicas =
+        [
+            ...new Map(
+                categoriasExcel.map(
+                    categoria => [
+
+                        categoria
+                            .trim()
+                            .toLowerCase(),
+
+                        categoria.trim()
+
+                    ]
+                )
+            ).values()
+        ];
+
+    const categoriasFaltantes =
+        categoriasUnicas.filter(
+            categoria =>
+                !nombresExistentes.includes(
+                    categoria.toLowerCase()
+                )
+        );
+
+
+    return categoriasFaltantes;
+
+}
+
+export async function generarResultadoImportacion(
+    productos,
+    errores
+) {
+
+
+    const categoriasFaltantes =
+        await detectarCategoriasFaltantes(
+            productos
+        );
+
+
+    const archivoValido =
+        errores.length === 0 &&
+        categoriasFaltantes.length === 0;
+
+    return {
+
+        total_filas:
+            productos.length,
+
+        archivo_valido:
+            archivoValido,
+
+        categorias_faltantes:
+            categoriasFaltantes,
+
+        errores
+
     };
 
 }

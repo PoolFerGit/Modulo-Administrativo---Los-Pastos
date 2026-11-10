@@ -281,3 +281,11 @@ export const eliminarProducto = async (
     }
 
 };
+
+export const importarProductosExcel = async (
+    request,
+    response,
+    next
+) => {
+    // ...
+};
