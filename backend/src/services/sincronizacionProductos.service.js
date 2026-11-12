@@ -403,3 +403,200 @@ export async function generarResultadoImportacion(
     };
 
 }
+
+function normalizarNombreCategoria(
+    nombre
+) {
+
+    return String(
+        nombre ?? ''
+    )
+        .trim()
+        .toLowerCase();
+
+}
+
+
+export async function prepararProductosImportacion(
+    productos
+) {
+
+    const categorias =
+        await listarCategoriasCatalogo();
+
+
+    const mapaCategorias =
+        new Map(
+            categorias.map(
+                categoria => [
+
+                    normalizarNombreCategoria(
+                        categoria.categoria_nombre
+                    ),
+
+                    Number(
+                        categoria.categoria_id
+                    )
+
+                ]
+            )
+        );
+
+
+    const productosPreparados = [];
+
+
+    for (
+        const producto
+        of productos
+    ) {
+
+        const categoriaId =
+            mapaCategorias.get(
+                normalizarNombreCategoria(
+                    producto.categoria
+                )
+            );
+
+
+        if (!categoriaId) {
+
+            throw new Error(
+                `La categoría "${producto.categoria}" no existe.`
+            );
+
+        }
+
+
+        productosPreparados.push({
+
+            fila_excel:
+                producto.fila_excel,
+
+            producto: {
+
+                tipo_producto:
+                    producto.tipo_producto,
+
+                nombre:
+                    producto.nombre,
+
+                color:
+                    producto.color,
+
+                descripcion:
+                    producto.descripcion,
+
+                precio:
+                    producto.precio,
+
+                talla_tamano:
+                    producto.talla_tamano,
+
+                imagen:
+                    null,
+
+                categoria_id:
+                    categoriaId,
+
+                producto_destacado:
+                    producto.producto_destacado,
+
+                activo:
+                    producto.activo
+
+            }
+
+        });
+
+    }
+
+
+    return productosPreparados;
+
+}
+
+export async function importarProductosSincronizados(
+    productos
+) {
+
+    const productosPreparados =
+        await prepararProductosImportacion(
+            productos
+        );
+
+
+    const productosImportados = [];
+
+    const errores = [];
+
+
+    for (
+        const item
+        of productosPreparados
+    ) {
+
+        try {
+
+            const resultado =
+                await crearProductoSincronizado(
+                    item.producto
+                );
+
+
+            productosImportados.push({
+
+                fila:
+                    item.fila_excel,
+
+                id_producto:
+                    resultado.id_producto,
+
+                nombre:
+                    item.producto.nombre
+
+            });
+
+        }
+        catch (error) {
+
+            errores.push({
+
+                fila:
+                    item.fila_excel,
+
+                producto:
+                    item.producto.nombre,
+
+                mensaje:
+                    error.message
+
+            });
+
+        }
+
+    }
+
+
+    return {
+
+        total:
+            productosPreparados.length,
+
+        importados:
+            productosImportados.length,
+
+        fallidos:
+            errores.length,
+
+        completo:
+            errores.length === 0,
+
+        productos:
+            productosImportados,
+
+        errores
+
+    };
+
+}

@@ -12,7 +12,8 @@ import {
     RespuestaProductos, 
     ProductoRegistro,
     RespuestaCrearProducto,
-    Producto
+    Producto,
+    RespuestaImportacionProductos,
 } from '../models/producto';
 
 import {

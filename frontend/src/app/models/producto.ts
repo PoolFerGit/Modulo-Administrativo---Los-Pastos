@@ -73,3 +73,51 @@ export interface RespuestaCrearProducto {
     };
 
 }
+
+export interface ErrorImportacionProducto {
+
+    fila: number;
+
+    campo?: string;
+
+    producto?: string;
+
+    mensaje: string;
+
+}
+
+
+export interface ProductoImportado {
+
+    fila: number;
+
+    id_producto: number;
+
+    nombre: string;
+
+}
+
+
+export interface RespuestaImportacionProductos {
+
+    mensaje: string;
+
+    total_filas?: number;
+
+    archivo_valido?: boolean;
+
+    categorias_faltantes?: string[];
+
+    total?: number;
+
+    importados?: number;
+
+    fallidos?: number;
+
+    completo?: boolean;
+
+    productos?: ProductoImportado[];
+
+    errores: ErrorImportacionProducto[];
+
+}

@@ -1,6 +1,9 @@
 import { listarProductos, buscarProductoPorId, actualizarEstadoProductoID } from '../services/productos.service.js';
-import { crearProductoSincronizado, actualizarProductoSincronizado, obtenerProductoSincronizadoPorId, obtenerProductosSincronizados, eliminarProductoSincronizado } from '../services/sincronizacionProductos.service.js';
+import { generarResultadoImportacion, importarProductosSincronizados, crearProductoSincronizado, actualizarProductoSincronizado, obtenerProductoSincronizadoPorId, obtenerProductosSincronizados, eliminarProductoSincronizado } from '../services/sincronizacionProductos.service.js';
 import { validarProducto, validarEstadoProducto } from '../validators/productos.validator.js';
+import {leerProductosExcel, normalizarProductosExcel, validarProductosExcel} from '../services/excelProductos.service.js';
+import {unlink} from 'fs/promises';
+
 import ApiError from '../utils/ApiError.js';
 
 
@@ -287,5 +290,111 @@ export const importarProductosExcel = async (
     response,
     next
 ) => {
-    // ...
+
+    let rutaArchivo = null;
+
+
+    try {
+
+        if (!request.file) {
+
+            throw new ApiError(
+                400,
+                'Debe seleccionar un archivo Excel.'
+            );
+
+        }
+
+
+        rutaArchivo =
+            request.file.path;
+
+
+        const filas =
+            leerProductosExcel(
+                rutaArchivo
+            );
+
+
+        const productos =
+            normalizarProductosExcel(
+                filas
+            );
+
+
+        const errores =
+            validarProductosExcel(
+                productos
+            );
+
+
+        const validacion =
+            await generarResultadoImportacion(
+                productos,
+                errores
+            );
+
+
+        if (
+            !validacion.archivo_valido
+        ) {
+
+            return response
+                .status(422)
+                .json({
+
+                    mensaje:
+                        'El archivo contiene información que debe revisarse antes de importar.',
+
+                    ...validacion
+
+                });
+
+        }
+
+
+        const resultado =
+            await importarProductosSincronizados(
+                productos
+            );
+
+
+        return response
+            .status(200)
+            .json({
+
+                mensaje:
+                    resultado.completo
+                        ? 'Los productos fueron importados correctamente.'
+                        : 'La importación finalizó con algunos registros no procesados.',
+
+                ...resultado
+
+            });
+
+    }
+    catch (error) {
+
+        next(error);
+
+    }
+    finally {
+
+        if (rutaArchivo) {
+
+            try {
+
+                await unlink(
+                    rutaArchivo
+                );
+
+            }
+            catch {
+
+            }
+
+        }
+
+    }
+
 };
