@@ -23,10 +23,284 @@
 
     </div>
 
+<div class="importacion-card">
 
+    <div class="importacion-header">
+
+        <div>
+
+            <h2>
+                Carga masiva desde Excel
+            </h2>
+
+            <p>
+                Selecciona un archivo Excel para registrar varios productos.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="importacion-contenido">
+
+        <input
+            id="archivoExcel"
+            type="file"
+            accept=".xlsx,.xls"
+            (change)="seleccionarArchivoExcel($event)"
+        >
+
+        @if (archivoExcel()) {
+
+            <div class="archivo-seleccionado">
+
+                <span>
+                    Archivo seleccionado:
+                </span>
+
+                <strong>
+                    {{ archivoExcel()?.name }}
+                </strong>
+
+            </div>
+
+        }
+
+        <button
+            type="button"
+            class="btn-primary"
+            [disabled]="
+                !archivoExcel() ||
+                revisandoArchivo()
+            "
+            (click)="revisarEImportar()"
+        >
+
+            @if (revisandoArchivo()) {
+
+                Revisando...
+
+            } @else {
+
+                Revisar e importar
+
+            }
+
+        </button>
+
+    </div>
+
+</div>
+@if (revisandoArchivo()) {
+
+    <div class="mensaje-importacion revisando">
+
+        <strong>
+            Revisando archivo...
+        </strong>
+
+        <span>
+            Estamos validando la información antes de realizar la importación.
+        </span>
+
+    </div>
+
+}
+
+@if (
+    categoriasFaltantes().length > 0
+) {
+
+    <div class="mensaje-importacion advertencia">
+
+        <h3>
+            Categorías faltantes
+        </h3>
+
+        <p>
+            El archivo contiene categorías que todavía no están registradas.
+        </p>
+
+        <div class="lista-categorias">
+
+            @for (
+                categoria
+                of categoriasFaltantes();
+                track categoria
+            ) {
+
+                <span class="categoria-faltante">
+                    {{ categoria }}
+                </span>
+
+            }
+
+        </div>
+
+        <button
+            type="button"
+            class="btn-primary"
+            (click)="irACategoriasFaltantes()"
+        >
+            Insertar categorías
+        </button>
+
+    </div>
+
+}
+
+@if (
+    resultadoImportacion()?.errores?.length
+) {
+
+    <div class="resultado-errores">
+
+        <h3>
+            Observaciones del archivo
+        </h3>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Fila</th>
+                    <th>Campo</th>
+                    <th>Descripción</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @for (
+                    error
+                    of resultadoImportacion()?.errores ?? [];
+                    track $index
+                ) {
+
+                    <tr>
+
+                        <td>
+                            {{ error.fila }}
+                        </td>
+
+                        <td>
+                            {{ error.campo || '-' }}
+                        </td>
+
+                        <td>
+                            {{ error.mensaje }}
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+}
+
+@if (
+    resultadoImportacion()?.completo
+) {
+
+    <div class="resultado-importacion">
+
+        <h3>
+            Importación completada
+        </h3>
+
+        <div class="resumen-importacion">
+
+            <div>
+
+                <span>
+                    Procesados
+                </span>
+
+                <strong>
+                    {{ resultadoImportacion()?.total || 0 }}
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Importados
+                </span>
+
+                <strong>
+                    {{ resultadoImportacion()?.importados || 0 }}
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Duplicados
+                </span>
+
+                <strong>
+                    {{ resultadoImportacion()?.duplicados || 0 }}
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Fallidos
+                </span>
+
+                <strong>
+                    {{ resultadoImportacion()?.fallidos || 0 }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        <a
+            routerLink="/productos"
+            class="btn-primary"
+        >
+            Ver productos
+        </a>
+
+    </div>
+
+}
+
+@if (
+    errorImportacion() &&
+    categoriasFaltantes().length === 0
+) {
+
+    <div class="mensaje error-api">
+
+        {{ errorImportacion() }}
+
+    </div>
+
+}
     <!-- ========================================= -->
     <!-- FORMULARIO PRINCIPAL -->
     <!-- ========================================= -->
+
+    <div class="separador-registro">
+
+    <span>
+        O registra un producto manualmente
+    </span>
+
+</div>
 
     <form
         [formGroup]="formulario"

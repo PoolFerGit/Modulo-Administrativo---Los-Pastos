@@ -9,6 +9,7 @@ import { ProductoCrear } from './pages/productos/producto-crear/producto-crear';
 import { ProductoEditar } from './pages/productos/producto-editar/producto-editar';
 
 import { AdminLayout } from './layout/admin-layout/admin-layout';
+import {CategoriasImportacion} from './pages/productos/categorias-importacion/categorias-importacion';
 
 export const routes: Routes = [
 
@@ -46,6 +47,11 @@ export const routes: Routes = [
             {
                 path: 'productos/nuevo',
                 component: ProductoCrear
+            },
+            
+            {
+                 path:'productos/categorias-importacion',
+                component: CategoriasImportacion
             },
 
             {

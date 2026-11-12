@@ -26,6 +26,7 @@ export interface Producto {
 
 }
 
+
 export interface RespuestaProductos {
 
     total: number;
@@ -33,6 +34,7 @@ export interface RespuestaProductos {
     productos: Producto[];
 
 }
+
 
 export interface ProductoRegistro {
 
@@ -69,10 +71,13 @@ export interface RespuestaCrearProducto {
     mensaje: string;
 
     producto: {
+
         id_producto: number;
+
     };
 
 }
+
 
 export interface ErrorImportacionProducto {
 
@@ -112,11 +117,15 @@ export interface RespuestaImportacionProductos {
 
     importados?: number;
 
+    duplicados?: number;
+
     fallidos?: number;
 
     completo?: boolean;
 
     productos?: ProductoImportado[];
+
+    productos_duplicados?: ProductoImportado[];
 
     errores: ErrorImportacionProducto[];
 

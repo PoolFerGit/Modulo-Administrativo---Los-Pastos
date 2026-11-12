@@ -12,6 +12,7 @@ import {
 } from '@angular/forms';
 
 import {
+    Router,
     RouterLink
 } from '@angular/router';
 
@@ -24,11 +25,16 @@ import {
 } from '../../../services/productos';
 
 import {
+    ImportacionProductosService
+} from '../../../services/importacion-productos';
+
+import {
     Categoria
 } from '../../../models/categoria';
 
 import {
-    ProductoRegistro
+    ProductoRegistro,
+    RespuestaImportacionProductos
 } from '../../../models/producto';
 
 
@@ -57,6 +63,14 @@ export class ProductoCrear
 
     private productosService =
         inject(ProductosService);
+
+        private importacionService =
+    inject(
+        ImportacionProductosService
+    );
+
+    private router =
+     inject(Router);
 
 
     // ------------------------------------------------
@@ -107,6 +121,28 @@ export class ProductoCrear
     // ------------------------------------------------
     // FORMULARIO PRINCIPAL DEL PRODUCTO
     // ------------------------------------------------
+
+    archivoExcel =
+    this.importacionService.archivo;
+
+categoriasFaltantes =
+    this.importacionService
+        .categoriasFaltantes;
+
+revisandoArchivo =
+    signal(false);
+
+mensajeImportacion =
+    signal('');
+
+errorImportacion =
+    signal('');
+
+resultadoImportacion =
+    signal<
+        RespuestaImportacionProductos |
+        null
+    >(null);
 
     formulario =
         this.fb.group({
@@ -405,6 +441,163 @@ export class ProductoCrear
     // ------------------------------------------------
     // REGISTRAR PRODUCTO
     // ------------------------------------------------
+
+    seleccionarArchivoExcel(
+    event: Event
+): void {
+
+    const input =
+        event.target as HTMLInputElement;
+
+    const archivo =
+        input.files?.[0];
+
+
+    if (!archivo) {
+
+        return;
+
+    }
+
+
+    this.importacionService
+        .guardarArchivo(
+            archivo
+        );
+
+    this.importacionService
+        .limpiarCategorias();
+
+    this.resultadoImportacion
+        .set(null);
+
+    this.mensajeImportacion
+        .set('');
+
+    this.errorImportacion
+        .set('');
+
+}
+
+revisarEImportar(): void {
+
+    const archivo =
+        this.archivoExcel();
+
+    if (!archivo) {
+
+        this.errorImportacion.set(
+            'Seleccione un archivo Excel.'
+        );
+
+        return;
+
+    }
+
+    this.revisandoArchivo.set(
+        true
+    );
+
+    this.mensajeImportacion.set('');
+
+    this.errorImportacion.set('');
+
+    this.resultadoImportacion.set(
+        null
+    );
+
+    this.importacionService
+        .limpiarCategorias();
+
+    this.productosService
+        .importarProductosExcel(
+            archivo
+        )
+        .subscribe({
+
+            next: (
+                respuesta
+            ) => {
+
+                this.resultadoImportacion
+                    .set(
+                        respuesta
+                    );
+
+                this.mensajeImportacion
+                    .set(
+                        respuesta.mensaje
+                    );
+
+                this.revisandoArchivo
+                    .set(false);
+
+                this.importacionService
+                    .limpiar();
+
+            },
+
+            error: (
+                error: HttpErrorResponse
+            ) => {
+
+                const respuesta =
+                    error.error as
+                        RespuestaImportacionProductos;
+
+                if (
+                    error.status === 422 &&
+                    respuesta
+                ) {
+
+                    this.resultadoImportacion
+                        .set(
+                            respuesta
+                        );
+
+                    const categorias =
+                        respuesta
+                            .categorias_faltantes ??
+                        [];
+
+                    this.importacionService
+                        .guardarCategorias(
+                            categorias
+                        );
+
+                    this.errorImportacion
+                        .set(
+                            respuesta.mensaje
+                        );
+
+                } else {
+
+                    this.errorImportacion
+                        .set(
+                            error.error?.error ||
+                            'No fue posible procesar el archivo.'
+                        );
+
+                }
+
+                this.revisandoArchivo
+                    .set(false);
+
+            }
+
+        });
+
+}
+
+irACategoriasFaltantes(): void {
+
+    this.router.navigate(
+        [
+            '/productos/categorias-importacion'
+        ]
+    );
+
+}
 
     registrarProducto(): void {
 

@@ -1,0 +1,112 @@
+<section class="categorias-importacion">
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>
+                Categorías faltantes
+            </h1>
+
+            <p>
+                Registra las categorías necesarias antes de continuar con la importación.
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            class="btn-secondary"
+            (click)="volver()"
+        >
+            Volver
+        </button>
+
+    </div>
+
+    @if (mensaje()) {
+
+        <div class="mensaje exito">
+            {{ mensaje() }}
+        </div>
+
+    }
+
+    @if (error()) {
+
+        <div class="mensaje error-api">
+            {{ error() }}
+        </div>
+
+    }
+
+    <div class="categorias-card">
+
+        @for (
+            categoria
+            of categorias();
+            track categoria
+        ) {
+
+            <div class="categoria-item">
+
+                <div>
+
+                    <span>
+                        Categoría
+                    </span>
+
+                    <strong>
+                        {{ categoria }}
+                    </strong>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    [disabled]="
+                        guardando() === categoria
+                    "
+                    (click)="crearCategoria(categoria)"
+                >
+
+                    @if (
+                        guardando() === categoria
+                    ) {
+
+                        Guardando...
+
+                    } @else {
+
+                        Insertar categoría
+
+                    }
+
+                </button>
+
+            </div>
+
+        } @empty {
+
+            <div class="sin-categorias">
+
+                <h3>
+                    Todas las categorías fueron registradas.
+                </h3>
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    (click)="volver()"
+                >
+                    Volver a la importación
+                </button>
+
+            </div>
+
+        }
+
+    </div>
+
+</section>

@@ -152,6 +152,28 @@ eliminarProducto(
 
 }
 
+importarProductosExcel(
+    archivo: File
+) {
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        'archivo',
+        archivo
+    );
+
+
+    return this.http
+        .post<RespuestaImportacionProductos>(
+            `${this.apiUrl}/importar`,
+            formData
+        );
+
+}
+
 
 }
 
