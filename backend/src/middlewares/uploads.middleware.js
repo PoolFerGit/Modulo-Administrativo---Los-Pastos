@@ -6,12 +6,14 @@ import fs from 'fs';
 const carpetaUploads =
     path.resolve('uploads');
 
+const carpetaProductos =
+    path.resolve(
+        'uploads',
+        'productos'
+    );
 
-if (
-    !fs.existsSync(
-        carpetaUploads
-    )
-) {
+
+if (!fs.existsSync(carpetaUploads)) {
 
     fs.mkdirSync(
         carpetaUploads,
@@ -23,7 +25,19 @@ if (
 }
 
 
-const storage =
+if (!fs.existsSync(carpetaProductos)) {
+
+    fs.mkdirSync(
+        carpetaProductos,
+        {
+            recursive: true
+        }
+    );
+
+}
+
+
+const storageExcel =
     multer.diskStorage({
 
         destination: (
@@ -48,7 +62,8 @@ const storage =
             const extension =
                 path.extname(
                     file.originalname
-                );
+                )
+                    .toLowerCase();
 
             const nombreArchivo =
                 `productos-${Date.now()}${extension}`;
@@ -63,7 +78,7 @@ const storage =
     });
 
 
-const fileFilter = (
+const filtrarExcel = (
     request,
     file,
     callback
@@ -103,9 +118,118 @@ const fileFilter = (
 const uploadExcel =
     multer({
 
-        storage,
+        storage:
+            storageExcel,
 
-        fileFilter,
+        fileFilter:
+            filtrarExcel,
+
+        limits: {
+
+            fileSize:
+                5 * 1024 * 1024
+
+        }
+
+    });
+
+
+const storageImagenes =
+    multer.diskStorage({
+
+        destination: (
+            request,
+            file,
+            callback
+        ) => {
+
+            callback(
+                null,
+                carpetaProductos
+            );
+
+        },
+
+        filename: (
+            request,
+            file,
+            callback
+        ) => {
+
+            const extension =
+                path.extname(
+                    file.originalname
+                )
+                    .toLowerCase();
+
+            const nombreArchivo =
+                `producto-${request.idProducto}-${Date.now()}-${Math.round(
+                    Math.random() * 100000
+                )}${extension}`;
+
+            callback(
+                null,
+                nombreArchivo
+            );
+
+        }
+
+    });
+
+
+const filtrarImagenes = (
+    request,
+    file,
+    callback
+) => {
+
+    const extension =
+        path.extname(
+            file.originalname
+        )
+            .toLowerCase();
+
+    const extensionesPermitidas = [
+        '.jpg',
+        '.jpeg',
+        '.png',
+        '.webp'
+    ];
+
+
+    if (
+        extensionesPermitidas.includes(
+            extension
+        )
+    ) {
+
+        callback(
+            null,
+            true
+        );
+
+        return;
+
+    }
+
+
+    callback(
+        new Error(
+            'Solo se permiten imágenes JPG, JPEG, PNG o WEBP.'
+        )
+    );
+
+};
+
+
+export const uploadImagenes =
+    multer({
+
+        storage:
+            storageImagenes,
+
+        fileFilter:
+            filtrarImagenes,
 
         limits: {
 

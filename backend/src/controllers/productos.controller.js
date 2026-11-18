@@ -3,8 +3,9 @@ import { generarResultadoImportacion, importarProductosSincronizados, crearProdu
 import { validarProducto, validarEstadoProducto } from '../validators/productos.validator.js';
 import {leerProductosExcel, normalizarProductosExcel, validarProductosExcel} from '../services/excelProductos.service.js';
 import {unlink} from 'fs/promises';
-
 import ApiError from '../utils/ApiError.js';
+import path from 'path';
+import {registrarImagenProducto, listarImagenesProducto, buscarImagenProducto, eliminarImagenProducto, establecerImagenPrincipalCatalogo} from '../services/catalogo.service.js';
 
 
 export const obtenerProductos = async (request, response, next) => {
@@ -394,6 +395,369 @@ export const importarProductosExcel = async (
             }
 
         }
+
+    }
+
+};
+
+export const subirImagenesProducto = async (
+    request,
+    response,
+    next
+) => {
+
+    try {
+
+        const producto =
+            await buscarProductoPorId(
+                request.idProducto
+            );
+
+
+        if (!producto) {
+
+            throw new ApiError(
+                404,
+                'Producto no encontrado.'
+            );
+
+        }
+
+
+        const archivos =
+            request.files || [];
+
+
+        if (
+            archivos.length === 0
+        ) {
+
+            throw new ApiError(
+                400,
+                'Debe seleccionar al menos una imagen.'
+            );
+
+        }
+
+
+        const imagenesExistentes =
+            await listarImagenesProducto(
+                request.idProducto
+            );
+
+
+        let siguienteOrden = 0;
+
+
+        if (
+            imagenesExistentes.length > 0
+        ) {
+
+            siguienteOrden =
+                Math.max(
+                    ...imagenesExistentes.map(
+                        imagen =>
+                            Number(
+                                imagen.producto_imagen_orden
+                            )
+                    )
+                ) + 1;
+
+        }
+
+
+        const imagenesRegistradas = [];
+
+
+        for (
+            let indice = 0;
+            indice < archivos.length;
+            indice++
+        ) {
+
+            const archivo =
+                archivos[indice];
+
+
+            const imagen =
+                await registrarImagenProducto({
+
+                    producto_id:
+                        request.idProducto,
+
+                    producto_imagen_url:
+                        `/uploads/productos/${archivo.filename}`,
+
+                    producto_imagen_alt:
+                        producto.nombre,
+
+                    producto_imagen_orden:
+                        siguienteOrden + indice,
+
+                    producto_imagen_principal:
+                        imagenesExistentes.length === 0 &&
+                        indice === 0
+
+                });
+
+
+            imagenesRegistradas.push(
+                imagen
+            );
+
+        }
+
+
+        response.status(201).json({
+
+            mensaje:
+                'Imágenes registradas correctamente.',
+
+            imagenes:
+                imagenesRegistradas
+
+        });
+
+    }
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+export const obtenerImagenesProducto = async (
+    request,
+    response,
+    next
+) => {
+
+    try {
+
+        const producto =
+            await buscarProductoPorId(
+                request.idProducto
+            );
+
+
+        if (!producto) {
+
+            throw new ApiError(
+                404,
+                'Producto no encontrado.'
+            );
+
+        }
+
+
+        const imagenes =
+            await listarImagenesProducto(
+                request.idProducto
+            );
+
+
+        response.status(200).json({
+
+            total:
+                imagenes.length,
+
+            imagenes:
+                imagenes
+
+        });
+
+    }
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+export const eliminarImagenDeProducto = async (
+    request,
+    response,
+    next
+) => {
+
+    try {
+
+        const idImagen =
+            Number(
+                request.params.idImagen
+            );
+
+
+        if (
+            !Number.isInteger(idImagen) ||
+            idImagen <= 0
+        ) {
+
+            throw new ApiError(
+                400,
+                'Identificador de imagen inválido.'
+            );
+
+        }
+
+
+        const imagen =
+            await buscarImagenProducto(
+                request.idProducto,
+                idImagen
+            );
+
+
+        if (!imagen) {
+
+            throw new ApiError(
+                404,
+                'Imagen no encontrada.'
+            );
+
+        }
+
+
+        const eraPrincipal =
+            Boolean(
+                imagen.producto_imagen_principal
+            );
+
+
+        await eliminarImagenProducto(
+            request.idProducto,
+            idImagen
+        );
+
+
+        const nombreArchivo =
+            path.basename(
+                imagen.producto_imagen_url
+            );
+
+
+        const rutaArchivo =
+            path.resolve(
+                'uploads',
+                'productos',
+                nombreArchivo
+            );
+
+
+        try {
+
+            await unlink(
+                rutaArchivo
+            );
+
+        }
+        catch {
+
+        }
+
+
+        if (eraPrincipal) {
+
+            const restantes =
+                await listarImagenesProducto(
+                    request.idProducto
+                );
+
+
+            if (
+                restantes.length > 0
+            ) {
+
+                await establecerImagenPrincipalCatalogo(
+                    request.idProducto,
+                    restantes[0]
+                        .producto_imagen_id
+                );
+
+            }
+
+        }
+
+
+        response.status(200).json({
+
+            mensaje:
+                'Imagen eliminada correctamente.'
+
+        });
+
+    }
+    catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+export const establecerImagenPrincipal = async (
+    request,
+    response,
+    next
+) => {
+
+    try {
+
+        const idImagen =
+            Number(
+                request.params.idImagen
+            );
+
+
+        if (
+            !Number.isInteger(idImagen) ||
+            idImagen <= 0
+        ) {
+
+            throw new ApiError(
+                400,
+                'Identificador de imagen inválido.'
+            );
+
+        }
+
+
+        const imagen =
+            await buscarImagenProducto(
+                request.idProducto,
+                idImagen
+            );
+
+
+        if (!imagen) {
+
+            throw new ApiError(
+                404,
+                'Imagen no encontrada.'
+            );
+
+        }
+
+
+        await establecerImagenPrincipalCatalogo(
+            request.idProducto,
+            idImagen
+        );
+
+
+        response.status(200).json({
+
+            mensaje:
+                'Imagen principal actualizada correctamente.'
+
+        });
+
+    }
+    catch (error) {
+
+        next(error);
 
     }
 

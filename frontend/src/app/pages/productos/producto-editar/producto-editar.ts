@@ -30,7 +30,8 @@ import {
 } from '../../../models/categoria';
 
 import {
-    ProductoRegistro
+    ProductoRegistro,
+    ProductoImagen,
 } from '../../../models/producto';
 
 
@@ -96,6 +97,24 @@ export class ProductoEditar
 
     cambiandoEstado =   
         signal(false);
+    
+        imagenesProducto =
+    signal<ProductoImagen[]>([]);
+
+    imagenesPendientes =
+    signal<{
+        archivo: File;
+        url: string;
+    }[]>([]);
+
+    guardandoImagenes =
+    signal(false);
+
+    mensajeImagenes =
+    signal('');
+
+    errorImagenes =
+    signal('');
 
 
     formulario =
@@ -177,6 +196,8 @@ export class ProductoEditar
         this.cargarCategorias();
 
         this.cargarProducto();
+
+        this.cargarImagenes();
 
     }
 
@@ -338,7 +359,286 @@ export class ProductoEditar
             });
 
     }
+    cargarImagenes(): void {
 
+    this.productosService
+        .obtenerImagenes(
+            this.idProducto
+        )
+        .subscribe({
+
+            next: (respuesta) => {
+
+                this.imagenesProducto.set(
+                    respuesta.imagenes
+                );
+
+            },
+
+            error: () => {
+
+                this.errorImagenes.set(
+                    'No fue posible cargar las imágenes.'
+                );
+
+            }
+
+        });
+
+}
+
+
+seleccionarImagenes(
+    event: Event
+): void {
+
+    const input =
+        event.target as HTMLInputElement;
+
+    const archivos =
+        Array.from(
+            input.files || []
+        );
+
+
+    const permitidos = [
+        'image/jpeg',
+        'image/png',
+        'image/webp'
+    ];
+
+
+    const validos =
+        archivos.filter(
+            archivo =>
+                permitidos.includes(
+                    archivo.type
+                ) &&
+                archivo.size <=
+                    5 * 1024 * 1024
+        );
+
+
+    const nuevas =
+        validos.map(
+            archivo => ({
+
+                archivo,
+
+                url:
+                    URL.createObjectURL(
+                        archivo
+                    )
+
+            })
+        );
+
+
+    this.imagenesPendientes.update(
+        actuales => [
+            ...actuales,
+            ...nuevas
+        ]
+    );
+
+
+    input.value = '';
+
+}
+
+
+eliminarImagenPendiente(
+    indice: number
+): void {
+
+    const imagenes =
+        [...this.imagenesPendientes()];
+
+
+    URL.revokeObjectURL(
+        imagenes[indice].url
+    );
+
+
+    imagenes.splice(
+        indice,
+        1
+    );
+
+
+    this.imagenesPendientes.set(
+        imagenes
+    );
+
+}
+
+
+guardarImagenes(): void {
+
+    const archivos =
+        this.imagenesPendientes()
+            .map(
+                imagen =>
+                    imagen.archivo
+            );
+
+
+    if (
+        archivos.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    this.guardandoImagenes.set(
+        true
+    );
+
+    this.mensajeImagenes.set('');
+
+    this.errorImagenes.set('');
+
+
+    this.productosService
+        .subirImagenes(
+            this.idProducto,
+            archivos
+        )
+        .subscribe({
+
+            next: () => {
+
+                for (
+                    const imagen
+                    of this.imagenesPendientes()
+                ) {
+
+                    URL.revokeObjectURL(
+                        imagen.url
+                    );
+
+                }
+
+
+                this.imagenesPendientes.set(
+                    []
+                );
+
+
+                this.mensajeImagenes.set(
+                    'Imágenes registradas correctamente.'
+                );
+
+
+                this.guardandoImagenes.set(
+                    false
+                );
+
+
+                this.cargarImagenes();
+
+            },
+
+            error: () => {
+
+                this.errorImagenes.set(
+                    'No fue posible guardar las imágenes.'
+                );
+
+                this.guardandoImagenes.set(
+                    false
+                );
+
+            }
+
+        });
+
+}
+
+
+eliminarImagen(
+    imagen: ProductoImagen
+): void {
+
+    this.productosService
+        .eliminarImagen(
+            this.idProducto,
+            imagen.producto_imagen_id
+        )
+        .subscribe({
+
+            next: () => {
+
+                this.cargarImagenes();
+
+            },
+
+            error: () => {
+
+                this.errorImagenes.set(
+                    'No fue posible eliminar la imagen.'
+                );
+
+            }
+
+        });
+
+}
+
+
+hacerPrincipal(
+    imagen: ProductoImagen
+): void {
+
+    this.productosService
+        .marcarImagenPrincipal(
+            this.idProducto,
+            imagen.producto_imagen_id
+        )
+        .subscribe({
+
+            next: () => {
+
+                this.cargarImagenes();
+
+            },
+
+            error: () => {
+
+                this.errorImagenes.set(
+                    'No fue posible cambiar la imagen principal.'
+                );
+
+            }
+
+        });
+
+}
+
+
+urlImagen(
+    ruta: string
+): string {
+
+    if (
+        ruta.startsWith(
+            'http'
+        )
+    ) {
+
+        return ruta;
+
+    }
+
+
+    return (
+        'http://localhost:3001' +
+        ruta
+    );
+
+}
 
     actualizarProducto(): void {
 

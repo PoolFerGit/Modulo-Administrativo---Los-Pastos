@@ -129,4 +129,40 @@ export interface RespuestaImportacionProductos {
 
     errores: ErrorImportacionProducto[];
 
+    
+
+}
+
+export interface ProductoImagen {
+
+    producto_imagen_id: number;
+
+    producto_id: number;
+
+    producto_imagen_url: string;
+
+    producto_imagen_alt:
+        string | null;
+
+    producto_imagen_orden: number;
+
+    producto_imagen_principal:
+        boolean | number;
+
+    producto_imagen_origen:
+        string;
+
+    producto_imagen_creada?:
+        string;
+
+}
+
+
+export interface RespuestaImagenes {
+
+    total: number;
+
+    imagenes:
+        ProductoImagen[];
+
 }

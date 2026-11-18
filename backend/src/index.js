@@ -1,6 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
+import path from 'path';
 
 import { probarConexion } from './config/db.js';
 import {probarConexionCatalogo} from './config/dbCatalogo.js';
@@ -15,6 +16,15 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+app.use(
+    '/uploads',
+    express.static(
+        path.resolve(
+            'uploads'
+        )
+    )
+);
 
 // Ruta principal de prueba
 app.get('/', (request, response) => {

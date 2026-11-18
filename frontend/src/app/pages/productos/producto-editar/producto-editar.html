@@ -68,6 +68,195 @@
 
 }
 
+<div class="imagenes-card">
+
+    <h3>
+        Imágenes del producto
+    </h3>
+
+
+    <div class="acciones-imagen">
+
+        <label
+            for="editarImagenes"
+            class="btn-secondary"
+        >
+            Añadir imágenes
+        </label>
+
+        <input
+            id="editarImagenes"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            hidden
+            (change)="seleccionarImagenes($event)"
+        >
+
+
+        <label
+            for="editarFoto"
+            class="btn-secondary"
+        >
+            Tomar foto
+        </label>
+
+        <input
+            id="editarFoto"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            (change)="seleccionarImagenes($event)"
+        >
+
+    </div>
+
+
+    @if (
+        imagenesProducto().length === 0
+    ) {
+
+        <p>
+            Este producto todavía no tiene imágenes.
+        </p>
+
+    }
+
+
+    <div class="galeria-imagenes">
+
+        @for (
+            imagen
+            of imagenesProducto();
+            track imagen.producto_imagen_id
+        ) {
+
+            <div class="imagen-item">
+
+                <img
+                    [src]="urlImagen(imagen.producto_imagen_url)"
+                    [alt]="imagen.producto_imagen_alt || 'Producto'"
+                >
+
+
+                @if (
+                    imagen.producto_imagen_principal
+                ) {
+
+                    <span class="imagen-principal">
+                        Principal
+                    </span>
+
+                } @else {
+
+                    <button
+                        type="button"
+                        class="btn-secundario-imagen"
+                        (click)="hacerPrincipal(imagen)"
+                    >
+                        Hacer principal
+                    </button>
+
+                }
+
+
+                <button
+                    type="button"
+                    class="btn-eliminar-imagen"
+                    (click)="eliminarImagen(imagen)"
+                >
+                    Eliminar
+                </button>
+
+            </div>
+
+        }
+
+    </div>
+
+
+    @if (
+        imagenesPendientes().length > 0
+    ) {
+
+        <h4>
+            Nuevas imágenes
+        </h4>
+
+        <div class="galeria-imagenes">
+
+            @for (
+                imagen
+                of imagenesPendientes();
+                track imagen.url;
+                let i = $index
+            ) {
+
+                <div class="imagen-item">
+
+                    <img
+                        [src]="imagen.url"
+                        alt="Vista previa"
+                    >
+
+                    <button
+                        type="button"
+                        class="btn-eliminar-imagen"
+                        (click)="eliminarImagenPendiente(i)"
+                    >
+                        Quitar
+                    </button>
+
+                </div>
+
+            }
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-primary boton-guardar-imagenes"
+            [disabled]="guardandoImagenes()"
+            (click)="guardarImagenes()"
+        >
+
+            @if (
+                guardandoImagenes()
+            ) {
+
+                Guardando...
+
+            } @else {
+
+                Guardar imágenes
+
+            }
+
+        </button>
+
+    }
+
+
+    @if (mensajeImagenes()) {
+
+        <div class="mensaje exito">
+            {{ mensajeImagenes() }}
+        </div>
+
+    }
+
+
+    @if (errorImagenes()) {
+
+        <div class="mensaje error-api">
+            {{ errorImagenes() }}
+        </div>
+
+    }
+
+</div>
 
     <!-- ========================================= -->
     <!-- FORMULARIO PRINCIPAL -->

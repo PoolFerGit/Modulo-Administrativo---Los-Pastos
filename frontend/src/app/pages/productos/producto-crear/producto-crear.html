@@ -700,7 +700,101 @@
 
         </div>
 
+        <div class="imagenes-card">
 
+    <h3>
+        Imágenes del producto
+    </h3>
+
+    <p>
+        Puedes subir varias imágenes o tomar una fotografía.
+    </p>
+
+
+    <div class="acciones-imagen">
+
+        <label
+            for="imagenesProducto"
+            class="btn-secondary"
+        >
+            Subir imágenes
+        </label>
+
+        <input
+            id="imagenesProducto"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            hidden
+            (change)="seleccionarImagenes($event)"
+        >
+
+
+        <label
+            for="fotoProducto"
+            class="btn-secondary"
+        >
+            Tomar foto
+        </label>
+
+        <input
+            id="fotoProducto"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            (change)="seleccionarImagenes($event)"
+        >
+
+    </div>
+
+
+    @if (errorImagenes()) {
+
+        <small class="error">
+            {{ errorImagenes() }}
+        </small>
+
+    }
+
+
+    @if (
+        imagenesSeleccionadas().length > 0
+    ) {
+
+        <div class="galeria-imagenes">
+
+            @for (
+                imagen
+                of imagenesSeleccionadas();
+                track imagen.url;
+                let i = $index
+            ) {
+
+                <div class="imagen-item">
+
+                    <img
+                        [src]="imagen.url"
+                        alt="Vista previa"
+                    >
+
+                    <button
+                        type="button"
+                        class="btn-eliminar-imagen"
+                        (click)="eliminarImagenSeleccionada(i)"
+                    >
+                        Eliminar
+                    </button>
+
+                </div>
+
+            }
+
+        </div>
+
+    }
+
+</div>
         <!-- ===================================== -->
          <!-- ESTADO DEL PRODUCTO -->
         <!-- ===================================== -->

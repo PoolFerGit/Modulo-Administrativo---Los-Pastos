@@ -235,3 +235,161 @@ export async function eliminarProductoCatalogo(
     return resultado;
 
 }
+
+export async function registrarImagenProducto(
+    imagen
+) {
+
+    const [resultado] =
+        await catalogoPool.query(
+            `INSERT INTO producto_imagen
+            (
+                producto_id,
+                producto_imagen_url,
+                producto_imagen_alt,
+                producto_imagen_orden,
+                producto_imagen_principal,
+                producto_imagen_origen
+            )
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [
+                imagen.producto_id,
+                imagen.producto_imagen_url,
+                imagen.producto_imagen_alt,
+                imagen.producto_imagen_orden,
+                imagen.producto_imagen_principal,
+                'upload'
+            ]
+        );
+
+
+    return {
+
+        producto_imagen_id:
+            resultado.insertId,
+
+        ...imagen,
+
+        producto_imagen_origen:
+            'upload'
+
+    };
+
+}
+
+
+export async function listarImagenesProducto(
+    idProducto
+) {
+
+    const [imagenes] =
+        await catalogoPool.query(
+            `SELECT
+                producto_imagen_id,
+                producto_id,
+                producto_imagen_url,
+                producto_imagen_alt,
+                producto_imagen_orden,
+                producto_imagen_principal,
+                producto_imagen_origen,
+                producto_imagen_creada
+            FROM producto_imagen
+            WHERE producto_id = ?
+            ORDER BY
+                producto_imagen_principal DESC,
+                producto_imagen_orden ASC,
+                producto_imagen_id ASC`,
+            [
+                idProducto
+            ]
+        );
+
+
+    return imagenes;
+
+}
+
+
+export async function buscarImagenProducto(
+    idProducto,
+    idImagen
+) {
+
+    const [imagenes] =
+        await catalogoPool.query(
+            `SELECT
+                producto_imagen_id,
+                producto_id,
+                producto_imagen_url,
+                producto_imagen_alt,
+                producto_imagen_orden,
+                producto_imagen_principal,
+                producto_imagen_origen
+            FROM producto_imagen
+            WHERE producto_id = ?
+            AND producto_imagen_id = ?`,
+            [
+                idProducto,
+                idImagen
+            ]
+        );
+
+
+    return imagenes[0];
+
+}
+
+
+export async function eliminarImagenProducto(
+    idProducto,
+    idImagen
+) {
+
+    const [resultado] =
+        await catalogoPool.query(
+            `DELETE FROM producto_imagen
+            WHERE producto_id = ?
+            AND producto_imagen_id = ?`,
+            [
+                idProducto,
+                idImagen
+            ]
+        );
+
+
+    return resultado;
+
+}
+
+
+export async function establecerImagenPrincipalCatalogo(
+    idProducto,
+    idImagen
+) {
+
+    await catalogoPool.query(
+        `UPDATE producto_imagen
+        SET producto_imagen_principal = FALSE
+        WHERE producto_id = ?`,
+        [
+            idProducto
+        ]
+    );
+
+
+    const [resultado] =
+        await catalogoPool.query(
+            `UPDATE producto_imagen
+            SET producto_imagen_principal = TRUE
+            WHERE producto_id = ?
+            AND producto_imagen_id = ?`,
+            [
+                idProducto,
+                idImagen
+            ]
+        );
+
+
+    return resultado;
+
+}

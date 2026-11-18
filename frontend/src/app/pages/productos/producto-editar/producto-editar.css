@@ -480,3 +480,84 @@
     }
 
 }
+
+.imagenes-card {
+    margin-bottom: 22px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.imagenes-card h3 {
+    margin-top: 0;
+    color: #172033;
+}
+
+.imagenes-card p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.acciones-imagen {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.galeria-imagenes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.imagen-item {
+    width: 120px;
+}
+
+.imagen-item img {
+    width: 110px;
+    height: 110px;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.imagen-principal {
+    display: block;
+    width: 110px;
+    margin-top: 6px;
+    padding: 5px;
+    text-align: center;
+    color: #027a48;
+    background-color: #ecfdf3;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.btn-secundario-imagen,
+.btn-eliminar-imagen {
+    width: 110px;
+    margin-top: 6px;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-secundario-imagen {
+    border: 1px solid #d0d5dd;
+    background-color: white;
+    color: #344054;
+}
+
+.btn-eliminar-imagen {
+    border: 1px solid #fecaca;
+    background-color: #fff5f5;
+    color: #b42318;
+}
+
+.boton-guardar-imagenes {
+    margin-top: 18px;
+}

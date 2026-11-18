@@ -144,6 +144,15 @@ resultadoImportacion =
         null
     >(null);
 
+imagenesSeleccionadas =
+    signal<{
+        archivo: File;
+        url: string;
+    }[]>([]);
+
+errorImagenes =
+    signal('');
+
     formulario =
         this.fb.group({
 
@@ -599,6 +608,127 @@ irACategoriasFaltantes(): void {
 
 }
 
+seleccionarImagenes(
+    event: Event
+): void {
+
+    const input =
+        event.target as HTMLInputElement;
+
+    const archivos =
+        Array.from(
+            input.files || []
+        );
+
+
+    const permitidos = [
+        'image/jpeg',
+        'image/png',
+        'image/webp'
+    ];
+
+
+    const validos =
+        archivos.filter(
+            archivo =>
+                permitidos.includes(
+                    archivo.type
+                ) &&
+                archivo.size <=
+                    5 * 1024 * 1024
+        );
+
+
+    if (
+        validos.length !==
+        archivos.length
+    ) {
+
+        this.errorImagenes.set(
+            'Algunas imágenes no fueron agregadas. Solo se permiten JPG, PNG o WEBP de hasta 5 MB.'
+        );
+
+    } else {
+
+        this.errorImagenes.set('');
+
+    }
+
+
+    const nuevas =
+        validos.map(
+            archivo => ({
+
+                archivo,
+
+                url:
+                    URL.createObjectURL(
+                        archivo
+                    )
+
+            })
+        );
+
+
+    this.imagenesSeleccionadas.update(
+        actuales => [
+            ...actuales,
+            ...nuevas
+        ]
+    );
+
+
+    input.value = '';
+
+}
+
+
+eliminarImagenSeleccionada(
+    indice: number
+): void {
+
+    const imagenes =
+        [...this.imagenesSeleccionadas()];
+
+
+    URL.revokeObjectURL(
+        imagenes[indice].url
+    );
+
+
+    imagenes.splice(
+        indice,
+        1
+    );
+
+
+    this.imagenesSeleccionadas.set(
+        imagenes
+    );
+
+}
+
+
+limpiarImagenesSeleccionadas(): void {
+
+    for (
+        const imagen
+        of this.imagenesSeleccionadas()
+    ) {
+
+        URL.revokeObjectURL(
+            imagen.url
+        );
+
+    }
+
+
+    this.imagenesSeleccionadas.set(
+        []
+    );
+
+}
+
     registrarProducto(): void {
 
         if (this.formulario.invalid) {
@@ -682,19 +812,62 @@ irACategoriasFaltantes(): void {
 
                 next: (respuesta) => {
 
-                    console.log(
-                        'Producto registrado:',
-                        respuesta
-                    );
+const archivos =
+        this.imagenesSeleccionadas()
+            .map(
+                imagen =>
+                    imagen.archivo
+            );
 
 
-                    this.mensajeExito.set(
-                        'Producto registrado correctamente.'
-                    );
+    if (
+        archivos.length === 0
+    ) {
 
-                    this.guardando.set(false);
+        this.mensajeExito.set(
+            'Producto registrado correctamente.'
+        );
 
-                },
+        this.guardando.set(false);
+
+        return;
+
+    }
+
+
+    this.productosService
+        .subirImagenes(
+            respuesta.producto
+                .id_producto,
+            archivos
+        )
+        .subscribe({
+
+            next: () => {
+
+                this.mensajeExito.set(
+                    'Producto e imágenes registrados correctamente.'
+                );
+
+                this.limpiarImagenesSeleccionadas();
+
+                this.guardando.set(false);
+
+            },
+
+            error: () => {
+
+                this.mensajeError.set(
+                    'El producto fue registrado, pero no fue posible guardar las imágenes.'
+                );
+
+                this.guardando.set(false);
+
+                }
+
+              });
+
+            },
 
 
                 error: (

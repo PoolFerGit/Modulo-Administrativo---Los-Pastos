@@ -14,6 +14,8 @@ import {
     RespuestaCrearProducto,
     Producto,
     RespuestaImportacionProductos,
+    ProductoImagen,
+    RespuestaImagenes
 } from '../models/producto';
 
 import {
@@ -173,7 +175,82 @@ importarProductosExcel(
         );
 
 }
+subirImagenes(
+    idProducto: number,
+    archivos: File[]
+) {
 
+    const formData =
+        new FormData();
+
+
+    for (
+        const archivo
+        of archivos
+    ) {
+
+        formData.append(
+            'imagenes',
+            archivo
+        );
+
+    }
+
+
+    return this.http.post<{
+
+        mensaje: string;
+
+        imagenes:
+            ProductoImagen[];
+
+    }>(
+        `${this.apiUrl}/${idProducto}/imagenes`,
+        formData
+    );
+
+}
+
+
+obtenerImagenes(
+    idProducto: number
+) {
+
+    return this.http
+        .get<RespuestaImagenes>(
+            `${this.apiUrl}/${idProducto}/imagenes`
+        );
+
+}
+
+
+eliminarImagen(
+    idProducto: number,
+    idImagen: number
+) {
+
+    return this.http.delete<{
+        mensaje: string;
+    }>(
+        `${this.apiUrl}/${idProducto}/imagenes/${idImagen}`
+    );
+
+}
+
+
+marcarImagenPrincipal(
+    idProducto: number,
+    idImagen: number
+) {
+
+    return this.http.patch<{
+        mensaje: string;
+    }>(
+        `${this.apiUrl}/${idProducto}/imagenes/${idImagen}/principal`,
+        {}
+    );
+
+}
 
 }
 

@@ -633,5 +633,59 @@
     grid-template-columns:
         repeat(2, minmax(0, 1fr));
 }
+.imagenes-card {
+    margin-top: 24px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background-color: #f9fafb;
+}
 
+.imagenes-card h3 {
+    margin: 0 0 6px;
+    color: #172033;
+}
+
+.imagenes-card p {
+    margin: 0 0 16px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.acciones-imagen {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.galeria-imagenes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.imagen-item {
+    width: 120px;
+}
+
+.imagen-item img {
+    width: 110px;
+    height: 110px;
+    display: block;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.btn-eliminar-imagen {
+    width: 110px;
+    margin-top: 6px;
+    padding: 6px;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    background-color: #fff5f5;
+    color: #b42318;
+    cursor: pointer;
+}
 }
