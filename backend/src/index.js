@@ -8,6 +8,7 @@ import {probarConexionCatalogo} from './config/dbCatalogo.js';
 import productosRoutes from './routes/productos.routes.js';
 import {notFound, errorHandler} from './middlewares/error.middleware.js';
 import categoriasRoutes from './routes/categorias.routes.js';
+import usuariosRoutes from './routes/usuarios.routes.js';
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/productos', productosRoutes);
 
 // Rutas de integración
 app.use('/api/categorias', categoriasRoutes);
+app.use('/api/usuarios', usuariosRoutes);
 
 // Middleware para manejar rutas no encontradas
 app.use(notFound);

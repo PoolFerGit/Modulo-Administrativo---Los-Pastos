@@ -1,0 +1,384 @@
+.usuarios-page {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+
+.page-header h1 {
+    margin: 0;
+
+    color: #172033;
+    font-size: 28px;
+}
+
+
+.page-header p {
+    margin: 6px 0 0;
+
+    color: #6b7280;
+}
+
+
+.btn-primary,
+.btn-secondary,
+.btn-estado {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+
+.btn-primary {
+    border: none;
+
+    color: #ffffff;
+    background-color: #172033;
+}
+
+
+.btn-primary:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+}
+
+
+.btn-secondary {
+    border: 1px solid #d0d5dd;
+
+    color: #344054;
+    background-color: #ffffff;
+}
+
+
+.usuario-form {
+    margin-bottom: 24px;
+    padding: 24px;
+
+    background-color: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+
+.usuario-form h2 {
+    margin: 0 0 20px;
+
+    color: #172033;
+}
+
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.campo label {
+    margin-bottom: 7px;
+
+    color: #344054;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.campo input,
+.campo select {
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 14px;
+}
+
+
+.estado-inicial {
+    justify-content: flex-end;
+}
+
+
+.estado-check {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 8px;
+
+    min-height: 42px;
+}
+
+
+.estado-check input {
+    width: auto;
+}
+
+
+.error {
+    margin-top: 5px;
+
+    color: #b42318;
+
+    font-size: 12px;
+}
+
+
+.acciones {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 22px;
+}
+
+
+.mensaje {
+    margin-bottom: 20px;
+
+    padding: 12px 14px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+
+.exito {
+    color: #027a48;
+
+    background-color: #ecfdf3;
+
+    border: 1px solid #abefc6;
+}
+
+
+.error-api {
+    color: #b42318;
+
+    background-color: #fff5f5;
+
+    border: 1px solid #fecaca;
+}
+
+
+.usuarios-card {
+    padding: 22px;
+
+    background-color: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+
+.usuarios-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+.usuarios-toolbar h2 {
+    margin: 0;
+
+    color: #172033;
+}
+
+
+.usuarios-toolbar p {
+    margin: 5px 0 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+.usuarios-toolbar input {
+    width: 320px;
+    max-width: 100%;
+
+    padding: 10px 12px;
+
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+}
+
+
+.tabla-contenedor {
+    overflow-x: auto;
+}
+
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+th,
+td {
+    padding: 14px 12px;
+
+    text-align: left;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+
+th {
+    color: #667085;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+td {
+    color: #344054;
+
+    font-size: 14px;
+}
+
+
+.rol {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    color: #344054;
+
+    background-color: #f2f4f7;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+}
+
+
+.estado {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.estado.activo {
+    color: #027a48;
+
+    background-color: #ecfdf3;
+}
+
+
+.estado.inactivo {
+    color: #b42318;
+
+    background-color: #fff1f0;
+}
+
+
+.btn-estado {
+    padding: 7px 10px;
+
+    border: 1px solid #d0d5dd;
+
+    color: #344054;
+    background-color: #ffffff;
+}
+
+
+.btn-estado:hover {
+    background-color: #f9fafb;
+}
+
+
+.mensaje-carga {
+    padding: 25px;
+
+    text-align: center;
+
+    color: #667085;
+}
+
+
+@media (
+    max-width: 768px
+) {
+
+    .page-header,
+    .usuarios-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .usuarios-toolbar input {
+        width: 100%;
+    }
+
+
+    .acciones {
+        flex-direction: column-reverse;
+    }
+
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+
+}

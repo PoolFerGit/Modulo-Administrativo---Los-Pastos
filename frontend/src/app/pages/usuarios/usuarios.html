@@ -1,11 +1,418 @@
-<h1>Usuarios</h1>
+<section class="usuarios-page">
 
-<p>
-    Administración de usuarios
-    del módulo administrativo.
-</p>
+    <div class="page-header">
 
-<div class="panel">
-    La gestión de usuarios se implementará
-    en una siguiente etapa.
-</div>
+        <div>
+
+            <h1>
+                Usuarios administrativos
+            </h1>
+
+            <p>
+                Gestiona los usuarios autorizados para acceder al módulo administrativo.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-primary"
+            (click)="alternarFormulario()"
+        >
+
+            @if (
+                mostrarFormulario()
+            ) {
+
+                Cerrar formulario
+
+            } @else {
+
+                + Nuevo usuario
+
+            }
+
+        </button>
+
+    </div>
+
+
+    @if (
+        mostrarFormulario()
+    ) {
+
+        <form
+            class="usuario-form"
+            [formGroup]="formulario"
+            (ngSubmit)="guardarUsuario()"
+        >
+
+            <h2>
+                Registrar usuario
+            </h2>
+
+
+            <div class="form-grid">
+
+                <div class="campo">
+
+                    <label>
+                        Nombre *
+                    </label>
+
+                    <input
+                        type="text"
+                        formControlName="nombre"
+                        placeholder="Nombre del usuario"
+                    >
+
+                    @if (
+                        formulario.controls.nombre.touched &&
+                        formulario.controls.nombre.invalid
+                    ) {
+
+                        <small class="error">
+                            Ingrese un nombre válido.
+                        </small>
+
+                    }
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Correo electrónico *
+                    </label>
+
+                    <input
+                        type="email"
+                        formControlName="correo"
+                        placeholder="usuario@correo.com"
+                    >
+
+                    @if (
+                        formulario.controls.correo.touched &&
+                        formulario.controls.correo.invalid
+                    ) {
+
+                        <small class="error">
+                            Ingrese un correo electrónico válido.
+                        </small>
+
+                    }
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Rol *
+                    </label>
+
+                    <select
+                        formControlName="rol"
+                    >
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                        <option value="ADMIN">
+                            Administrador
+                        </option>
+
+                        <option value="DEVELOPER">
+                            Desarrollador
+                        </option>
+
+                        <option value="EDITOR">
+                            Editor
+                        </option>
+
+                    </select>
+
+                    @if (
+                        formulario.controls.rol.touched &&
+                        formulario.controls.rol.invalid
+                    ) {
+
+                        <small class="error">
+                            Seleccione un rol.
+                        </small>
+
+                    }
+
+                </div>
+
+
+                <div class="campo estado-inicial">
+
+                    <label>
+                        Estado inicial
+                    </label>
+
+                    <label class="estado-check">
+
+                        <input
+                            type="checkbox"
+                            formControlName="activo"
+                        >
+
+                        Usuario activo
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <div class="acciones">
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    (click)="alternarFormulario()"
+                >
+                    Cancelar
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    [disabled]="
+                        formulario.invalid ||
+                        guardando()
+                    "
+                >
+
+                    @if (
+                        guardando()
+                    ) {
+
+                        Guardando...
+
+                    } @else {
+
+                        Guardar usuario
+
+                    }
+
+                </button>
+
+            </div>
+
+        </form>
+
+    }
+
+
+    @if (
+        mensajeExito()
+    ) {
+
+        <div class="mensaje exito">
+
+            {{ mensajeExito() }}
+
+        </div>
+
+    }
+
+
+    @if (
+        mensajeError()
+    ) {
+
+        <div class="mensaje error-api">
+
+            {{ mensajeError() }}
+
+        </div>
+
+    }
+
+
+    <div class="usuarios-card">
+
+        <div class="usuarios-toolbar">
+
+            <div>
+
+                <h2>
+                    Usuarios registrados
+                </h2>
+
+                <p>
+                    Total: {{ usuarios().length }}
+                </p>
+
+            </div>
+
+
+            <input
+                type="search"
+                placeholder="Buscar por nombre o correo..."
+                (input)="buscarUsuarios($event)"
+            >
+
+        </div>
+
+
+        @if (
+            cargando()
+        ) {
+
+            <div class="mensaje-carga">
+
+                Cargando usuarios...
+
+            </div>
+
+        } @else if (
+            usuarios().length === 0
+        ) {
+
+            <div class="mensaje-carga">
+
+                No se encontraron usuarios.
+
+            </div>
+
+        } @else {
+
+            <div class="tabla-contenedor">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Nombre
+                            </th>
+
+                            <th>
+                                Correo
+                            </th>
+
+                            <th>
+                                Rol
+                            </th>
+
+                            <th>
+                                Estado
+                            </th>
+
+                            <th>
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @for (
+                            usuario
+                            of usuarios();
+                            track usuario.id_usuario
+                        ) {
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+                                        {{ usuario.nombre }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ usuario.correo }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="rol">
+
+                                        {{ nombreRol(usuario.rol) }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if (
+                                        usuario.activo
+                                    ) {
+
+                                        <span class="estado activo">
+                                            Activo
+                                        </span>
+
+                                    } @else {
+
+                                        <span class="estado inactivo">
+                                            Inactivo
+                                        </span>
+
+                                    }
+
+                                </td>
+
+
+                                <td>
+
+                                    <button
+                                        type="button"
+                                        class="btn-estado"
+                                        (click)="cambiarEstado(usuario)"
+                                    >
+
+                                        @if (
+                                            usuario.activo
+                                        ) {
+
+                                            Desactivar
+
+                                        } @else {
+
+                                            Activar
+
+                                        }
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        }
+
+    </div>
+
+</section>
