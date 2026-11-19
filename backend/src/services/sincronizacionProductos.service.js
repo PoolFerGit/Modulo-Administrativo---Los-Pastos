@@ -149,7 +149,11 @@ export async function obtenerProductosSincronizados(buscar = '') {
                             ? Boolean(
                                 productoCatalogo.producto_destacado
                             )
-                            : null
+                            : null,
+                            cantidad_imagenes:
+                             Number(
+                             productoCatalogo?.cantidad_imagenes ?? 0
+                            )
 
                 };
 

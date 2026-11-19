@@ -40,6 +40,43 @@
 
 </div>
 
+@if (
+    !cargando() &&
+    cantidadProductosSinImagen() > 0
+) {
+
+    <div class="aviso-imagenes">
+
+        <div>
+
+            <strong>
+                ⚠ Hay productos sin imágenes
+            </strong>
+
+            <span>
+
+                {{ cantidadProductosSinImagen() }}
+
+                @if (
+                    cantidadProductosSinImagen() === 1
+                ) {
+
+                    producto todavía no tiene imágenes asociadas.
+
+                } @else {
+
+                    productos todavía no tienen imágenes asociadas.
+
+                }
+
+            </span>
+
+        </div>
+
+    </div>
+
+}
+
 <div class="buscador-productos">
 
     <input
@@ -122,7 +159,7 @@
         track producto.id_producto
     ) {
 
-        <tr>
+        <tr [class.fila-sin-imagen]="producto.cantidad_imagenes === 0">
 
             <td>
                 {{ producto.id_producto }}

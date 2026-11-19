@@ -1,4 +1,4 @@
-import {Component, OnInit, inject, signal} from '@angular/core';
+import {Component, OnInit, inject, signal, computed} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {ProductosService} from '../../../services/productos';
 import {Producto} from '../../../models/producto';
@@ -17,6 +17,26 @@ export class Productos implements OnInit {
 
 
     productos = signal<Producto[]>([]);
+
+    productosSinImagen =
+    computed(
+        () =>
+            this.productos()
+                .filter(
+                    producto =>
+                        Number(
+                            producto.cantidad_imagenes
+                        ) === 0
+                )
+    );
+
+
+cantidadProductosSinImagen =
+    computed(
+        () =>
+            this.productosSinImagen()
+                .length
+    );
 
     productoEliminando = signal<number | null>(null);
 

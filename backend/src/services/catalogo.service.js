@@ -77,10 +77,18 @@ export async function listarProductosCatalogo() {
                 p.producto_id,
                 p.categoria_id,
                 c.categoria_nombre,
-                p.producto_destacado
+                p.producto_destacado,
+                COUNT(pi.producto_imagen_id) AS cantidad_imagenes
             FROM producto p
             LEFT JOIN categoria c
                 ON p.categoria_id = c.categoria_id
+            LEFT JOIN producto_imagen pi
+                ON p.producto_id = pi.producto_id
+            GROUP BY
+                p.producto_id,
+                p.categoria_id,
+                c.categoria_nombre,
+                p.producto_destacado
             ORDER BY p.producto_id ASC`
         );
 

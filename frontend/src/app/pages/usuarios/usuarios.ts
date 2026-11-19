@@ -2,7 +2,8 @@ import {
     Component,
     OnInit,
     inject,
-    signal
+    signal,
+    computed
 } from '@angular/core';
 
 import {
@@ -76,6 +77,134 @@ export class Usuarios
 
     busqueda =
         signal('');
+
+
+    usuarioEditando =
+        signal<Usuario | null>(
+            null
+        );
+
+
+    filtroRol =
+        signal<
+            'TODOS' |
+            RolUsuario
+        >(
+            'TODOS'
+        );
+
+
+    filtroEstado =
+        signal<
+            'TODOS' |
+            'ACTIVO' |
+            'INACTIVO'
+        >(
+            'TODOS'
+        );
+
+
+    usuarioCambiandoEstado =
+        signal<number | null>(
+            null
+        );
+
+
+    totalUsuarios =
+        computed(
+            () =>
+                this.usuarios()
+                    .length
+        );
+
+
+    totalActivos =
+        computed(
+            () =>
+                this.usuarios()
+                    .filter(
+                        usuario =>
+                            Boolean(
+                                usuario.activo
+                            )
+                    )
+                    .length
+        );
+
+
+    totalInactivos =
+        computed(
+            () =>
+                this.usuarios()
+                    .filter(
+                        usuario =>
+                            !Boolean(
+                                usuario.activo
+                            )
+                    )
+                    .length
+        );
+
+
+    usuariosFiltrados =
+        computed(
+            () => {
+
+                let resultado =
+                    this.usuarios();
+
+
+                if (
+                    this.filtroRol() !==
+                    'TODOS'
+                ) {
+
+                    resultado =
+                        resultado.filter(
+                            usuario =>
+                                usuario.rol ===
+                                this.filtroRol()
+                        );
+
+                }
+
+
+                if (
+                    this.filtroEstado() ===
+                    'ACTIVO'
+                ) {
+
+                    resultado =
+                        resultado.filter(
+                            usuario =>
+                                Boolean(
+                                    usuario.activo
+                                )
+                        );
+
+                }
+
+
+                if (
+                    this.filtroEstado() ===
+                    'INACTIVO'
+                ) {
+
+                    resultado =
+                        resultado.filter(
+                            usuario =>
+                                !Boolean(
+                                    usuario.activo
+                                )
+                        );
+
+                }
+
+
+                return resultado;
+
+            }
+        );
 
 
     formulario =
@@ -200,11 +329,66 @@ export class Usuarios
     }
 
 
-    alternarFormulario(): void {
+    actualizarFiltroRol(
+        event: Event
+    ): void {
 
-        this.mostrarFormulario.set(
-            !this.mostrarFormulario()
+        const select =
+            event.target as
+                HTMLSelectElement;
+
+
+        this.filtroRol.set(
+            select.value as
+                'TODOS' |
+                RolUsuario
         );
+
+    }
+
+
+    actualizarFiltroEstado(
+        event: Event
+    ): void {
+
+        const select =
+            event.target as
+                HTMLSelectElement;
+
+
+        this.filtroEstado.set(
+            select.value as
+                'TODOS' |
+                'ACTIVO' |
+                'INACTIVO'
+        );
+
+    }
+
+
+    abrirNuevoUsuario(): void {
+
+        this.usuarioEditando.set(
+            null
+        );
+
+
+        this.formulario.reset({
+
+            nombre:
+                '',
+
+            correo:
+                '',
+
+            rol:
+                '',
+
+            activo:
+                true
+
+        });
+
 
         this.mensajeExito.set(
             ''
@@ -215,27 +399,90 @@ export class Usuarios
         );
 
 
-        if (
-            !this.mostrarFormulario()
-        ) {
+        this.mostrarFormulario.set(
+            true
+        );
 
-            this.formulario.reset({
+    }
 
-                nombre:
-                    '',
 
-                correo:
-                    '',
+    editarUsuario(
+        usuario: Usuario
+    ): void {
 
-                rol:
-                    '',
+        this.usuarioEditando.set(
+            usuario
+        );
 
-                activo:
-                    true
 
-            });
+        this.formulario.patchValue({
 
-        }
+            nombre:
+                usuario.nombre,
+
+            correo:
+                usuario.correo,
+
+            rol:
+                usuario.rol,
+
+            activo:
+                Boolean(
+                    usuario.activo
+                )
+
+        });
+
+
+        this.mensajeExito.set(
+            ''
+        );
+
+        this.mensajeError.set(
+            ''
+        );
+
+
+        this.mostrarFormulario.set(
+            true
+        );
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+    }
+
+
+    cancelarFormulario(): void {
+
+        this.usuarioEditando.set(
+            null
+        );
+
+
+        this.mostrarFormulario.set(
+            false
+        );
+
+
+        this.formulario.reset({
+
+            nombre:
+                '',
+
+            correo:
+                '',
+
+            rol:
+                '',
+
+            activo:
+                true
+
+        });
 
     }
 
@@ -296,6 +543,93 @@ export class Usuarios
         );
 
 
+        const usuarioActual =
+            this.usuarioEditando();
+
+
+        if (usuarioActual) {
+
+            this.usuariosService
+                .actualizarUsuario(
+                    usuarioActual
+                        .id_usuario,
+                    usuario
+                )
+                .subscribe({
+
+                    next: () => {
+
+                        this.mensajeExito.set(
+                            'Usuario actualizado correctamente.'
+                        );
+
+
+                        this.guardando.set(
+                            false
+                        );
+
+
+                        this.usuarioEditando.set(
+                            null
+                        );
+
+
+                        this.mostrarFormulario.set(
+                            false
+                        );
+
+
+                        this.formulario.reset({
+
+                            nombre:
+                                '',
+
+                            correo:
+                                '',
+
+                            rol:
+                                '',
+
+                            activo:
+                                true
+
+                        });
+
+
+                        this.cargarUsuarios(
+                            this.busqueda()
+                        );
+
+                    },
+
+                    error: (
+                        error:
+                            HttpErrorResponse
+                    ) => {
+
+                        this.mensajeError.set(
+
+                            error.error?.error ||
+
+                            'No fue posible actualizar el usuario.'
+
+                        );
+
+
+                        this.guardando.set(
+                            false
+                        );
+
+                    }
+
+                });
+
+
+            return;
+
+        }
+
+
         this.usuariosService
             .crearUsuario(
                 usuario
@@ -306,6 +640,16 @@ export class Usuarios
 
                     this.mensajeExito.set(
                         'Usuario registrado correctamente.'
+                    );
+
+
+                    this.guardando.set(
+                        false
+                    );
+
+
+                    this.mostrarFormulario.set(
+                        false
                     );
 
 
@@ -324,16 +668,6 @@ export class Usuarios
                             true
 
                     });
-
-
-                    this.mostrarFormulario.set(
-                        false
-                    );
-
-
-                    this.guardando.set(
-                        false
-                    );
 
 
                     this.cargarUsuarios(
@@ -371,10 +705,36 @@ export class Usuarios
         usuario: Usuario
     ): void {
 
-        const nuevoEstado =
-            !Boolean(
+        const estadoActual =
+            Boolean(
                 usuario.activo
             );
+
+
+        const nuevoEstado =
+            !estadoActual;
+
+
+        if (estadoActual) {
+
+            const confirmar =
+                window.confirm(
+                    `¿Desea desactivar al usuario "${usuario.nombre}"?`
+                );
+
+
+            if (!confirmar) {
+
+                return;
+
+            }
+
+        }
+
+
+        this.usuarioCambiandoEstado.set(
+            usuario.id_usuario
+        );
 
 
         this.mensajeExito.set(
@@ -404,6 +764,11 @@ export class Usuarios
                     );
 
 
+                    this.usuarioCambiandoEstado.set(
+                        null
+                    );
+
+
                     this.cargarUsuarios(
                         this.busqueda()
                     );
@@ -421,6 +786,11 @@ export class Usuarios
 
                         'No fue posible cambiar el estado del usuario.'
 
+                    );
+
+
+                    this.usuarioCambiandoEstado.set(
+                        null
                     );
 
                 }

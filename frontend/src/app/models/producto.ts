@@ -24,6 +24,8 @@ export interface Producto {
 
     producto_destacado: boolean;
 
+    cantidad_imagenes: number;
+
 }
 
 
