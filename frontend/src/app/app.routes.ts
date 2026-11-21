@@ -10,7 +10,7 @@ import { ProductoEditar } from './pages/productos/producto-editar/producto-edita
 
 import { AdminLayout } from './layout/admin-layout/admin-layout';
 import {CategoriasImportacion} from './pages/productos/categorias-importacion/categorias-importacion';
-
+import { usuariosGuard} from './guards/usuarios.guard';
 export const routes: Routes = [
 
     {
@@ -36,7 +36,8 @@ export const routes: Routes = [
 
             {
                 path: 'usuarios',
-                component: Usuarios
+                component: Usuarios,
+                canActivate: [usuariosGuard]
             },
 
             {

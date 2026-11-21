@@ -570,3 +570,18 @@ tbody tr:hover {
     }
 
 }
+
+.solo-consulta {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    color: #667085;
+
+    background-color: #f2f4f7;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 500;
+}

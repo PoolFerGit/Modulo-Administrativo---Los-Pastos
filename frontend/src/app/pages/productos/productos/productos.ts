@@ -1,6 +1,7 @@
 import {Component, OnInit, inject, signal, computed} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {ProductosService} from '../../../services/productos';
+import {PermisosService} from '../../../services/permisos';
 import {Producto} from '../../../models/producto';
 
 @Component({selector: 'app-productos',
@@ -14,6 +15,9 @@ export class Productos implements OnInit {
 
     private productosService =
         inject(ProductosService);
+    
+    permisos =
+    inject(PermisosService);
 
 
     productos = signal<Producto[]>([]);
@@ -138,6 +142,19 @@ limpiarBusqueda(): void {
 eliminarProducto(
     producto: Producto
 ): void {
+
+    if (
+    !this.permisos
+        .puedeEliminarProductos()
+) {
+
+    this.mensajeError.set(
+        'No tiene permisos para eliminar productos.'
+    );
+
+    return;
+
+}
 
     const confirmar =
         window.confirm(

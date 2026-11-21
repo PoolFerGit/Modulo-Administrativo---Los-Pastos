@@ -84,3 +84,44 @@
     color: #d8deea;
     text-decoration: none;
 }
+
+.rol-prueba {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin-top: 22px;
+    padding: 12px;
+
+    background-color:
+        rgba(255, 255, 255, 0.06);
+
+    border-radius: 8px;
+}
+
+
+.rol-prueba label {
+    color: #d8deea;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+.rol-prueba select {
+    width: 100%;
+
+    padding: 8px;
+
+    border: none;
+    border-radius: 6px;
+
+    background-color: #ffffff;
+
+    color: #172033;
+
+    font-size: 13px;
+}

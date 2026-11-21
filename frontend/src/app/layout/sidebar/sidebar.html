@@ -1,5 +1,6 @@
 <aside class="sidebar">
 
+
     <div class="brand">
 
         <div class="brand-logo">
@@ -7,13 +8,50 @@
         </div>
 
         <div>
-            <strong>Los Pastos</strong>
-            <span>Administración</span>
+
+            <strong>
+                Los Pastos
+            </strong>
+
+            <span>
+                Administración
+            </span>
+
         </div>
 
     </div>
 
+
+    <div class="rol-prueba">
+
+        <label>
+            Rol de prueba
+        </label>
+
+        <select
+            [value]="permisos.rolActual()"
+            (change)="cambiarRol($event)"
+        >
+
+            <option value="ADMIN">
+                Administrador
+            </option>
+
+            <option value="DEVELOPER">
+                Desarrollador
+            </option>
+
+            <option value="EDITOR">
+                Editor
+            </option>
+
+        </select>
+
+    </div>
+
+
     <nav class="menu">
+
 
         <a
             routerLink="/dashboard"
@@ -22,6 +60,7 @@
             Dashboard
         </a>
 
+
         <a
             routerLink="/productos"
             routerLinkActive="active"
@@ -29,21 +68,32 @@
             Productos
         </a>
 
-        <a
-            routerLink="/usuarios"
-            routerLinkActive="active"
-        >
-            Usuarios
-        </a>
+
+        @if (
+            permisos.puedeVerUsuarios()
+        ) {
+
+            <a
+                routerLink="/usuarios"
+                routerLinkActive="active"
+            >
+                Usuarios
+            </a>
+
+        }
 
     </nav>
+
 
     <div class="sidebar-footer">
 
         <a routerLink="/login">
+
             Cerrar sesión
+
         </a>
 
     </div>
+
 
 </aside>

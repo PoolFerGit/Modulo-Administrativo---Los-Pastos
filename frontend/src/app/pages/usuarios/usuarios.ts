@@ -21,6 +21,10 @@ import {
 } from '../../services/usuarios';
 
 import {
+    PermisosService
+} from '../../services/permisos';
+
+import {
     Usuario,
     UsuarioRegistro,
     RolUsuario
@@ -46,6 +50,9 @@ export class Usuarios
 
     private usuariosService =
         inject(UsuariosService);
+
+    permisos =
+    inject(PermisosService);
 
     private fb =
         inject(FormBuilder);
@@ -368,6 +375,19 @@ export class Usuarios
 
     abrirNuevoUsuario(): void {
 
+        if (
+    !this.permisos
+        .puedeGestionarUsuarios()
+        ) {
+
+    this.mensajeError.set(
+        'No tiene permisos para registrar usuarios.'
+        );
+
+    return;
+
+     }
+
         this.usuarioEditando.set(
             null
         );
@@ -409,6 +429,19 @@ export class Usuarios
     editarUsuario(
         usuario: Usuario
     ): void {
+
+        if (
+    !this.permisos
+        .puedeGestionarUsuarios()
+) {
+
+    this.mensajeError.set(
+        'No tiene permisos para modificar usuarios.'
+    );
+
+    return;
+
+}
 
         this.usuarioEditando.set(
             usuario
@@ -488,6 +521,19 @@ export class Usuarios
 
 
     guardarUsuario(): void {
+
+        if (
+    !this.permisos
+        .puedeGestionarUsuarios()
+) {
+
+    this.mensajeError.set(
+        'No tiene permisos para guardar cambios de usuarios.'
+    );
+
+    return;
+
+}
 
         if (
             this.formulario.invalid
@@ -704,6 +750,19 @@ export class Usuarios
     cambiarEstado(
         usuario: Usuario
     ): void {
+
+        if (
+    !this.permisos
+        .puedeGestionarUsuarios()
+) {
+
+    this.mensajeError.set(
+        'No tiene permisos para cambiar el estado de usuarios.'
+    );
+
+    return;
+
+}
 
         const estadoActual =
             Boolean(

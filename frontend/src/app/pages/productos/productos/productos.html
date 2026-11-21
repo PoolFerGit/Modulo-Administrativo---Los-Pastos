@@ -222,6 +222,7 @@
                     Editar
                 </a>
 
+                    @if (permisos.puedeEliminarProductos()) {
                 <button
                     type="button"
                     class="btn-eliminar"
@@ -242,6 +243,7 @@
                     }
 
                 </button>
+            }
 
             </td>
 
