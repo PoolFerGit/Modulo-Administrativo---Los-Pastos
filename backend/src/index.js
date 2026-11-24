@@ -9,7 +9,7 @@ import productosRoutes from './routes/productos.routes.js';
 import {notFound, errorHandler} from './middlewares/error.middleware.js';
 import categoriasRoutes from './routes/categorias.routes.js';
 import usuariosRoutes from './routes/usuarios.routes.js';
-
+import authRoutes from './routes/auth.routes.js';
 const app = express();
 
 app.use(cors({
@@ -38,6 +38,7 @@ app.use('/api/productos', productosRoutes);
 // Rutas de integración
 app.use('/api/categorias', categoriasRoutes);
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/auth', authRoutes);
 
 // Middleware para manejar rutas no encontradas
 app.use(notFound);
