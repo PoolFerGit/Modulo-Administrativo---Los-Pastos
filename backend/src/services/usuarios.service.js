@@ -207,3 +207,20 @@ export async function actualizarEstadoUsuarioID(
     return resultado;
 
 }
+
+export async function actualizarGoogleIdUsuario(
+    idUsuario,
+    googleId
+) {
+
+    await pool.query(
+        `UPDATE usuarios
+        SET google_id = ?
+        WHERE id_usuario = ?`,
+        [
+            googleId,
+            idUsuario
+        ]
+    );
+
+}

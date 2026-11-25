@@ -11,7 +11,9 @@ pnpm-debug.log*
 # =============================
 .env
 .env.*
+backend/.env
 !.env-ejemplo
+client_secret_*.json
 
 # =============================
 # ANGULAR

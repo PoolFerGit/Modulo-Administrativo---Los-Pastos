@@ -3,7 +3,7 @@ import {
 } from 'express';
 
 import {
-    validarAccesoUsuario
+    validarAccesoUsuario, iniciarSesionGoogle
 } from '../controllers/auth.controller.js';
 
 
@@ -16,5 +16,9 @@ router.post(
     validarAccesoUsuario
 );
 
+router.post(
+    '/google',
+    iniciarSesionGoogle
+);
 
 export default router;
