@@ -1,56 +1,82 @@
 <div class="login-page">
 
+
     <div class="login-card">
 
+
         <div class="logo">
+
             LP
+
         </div>
 
-        <h1>Los Pastos</h1>
+
+        <h1>
+
+            Los Pastos
+
+        </h1>
+
 
         <p class="subtitle">
+
             Panel Administrativo
+
         </p>
 
-        <div class="notice">
-            Vista preliminar del módulo de acceso.
+
+        <p class="descripcion">
+
+            Inicia sesión con una cuenta
+            autorizada para acceder al
+            módulo administrativo.
+
+        </p>
+
+
+        <div
+            #googleButton
+            class="google-button"
+        >
         </div>
 
-        <form>
 
-            <label>
-                Correo electrónico
-            </label>
+        @if (
+            cargando()
+        ) {
 
-            <input
-                type="email"
-                placeholder="usuario@correo.com"
-            >
+            <div class="mensaje-carga">
 
+                Validando usuario...
 
-            <label>
-                Contraseña
-            </label>
+            </div>
 
-            <input
-                type="password"
-                placeholder="••••••••"
-            >
+        }
 
 
-            <a
-                class="login-button"
-                routerLink="/dashboard"
-            >
-                Ingresar
-            </a>
+        @if (
+            mensajeError()
+        ) {
 
-        </form>
+            <div class="mensaje-error">
 
-        <small>
-            Autenticación pendiente de integración.
-        </small>
+                {{ mensajeError() }}
+
+            </div>
+
+        }
+
+
+        <div class="acceso-info">
+
+            Solo los usuarios previamente
+            autorizados pueden acceder al
+            sistema.
+
+        </div>
+
 
     </div>
+
 
 </div>

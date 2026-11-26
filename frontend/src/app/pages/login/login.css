@@ -111,3 +111,71 @@ input {
     text-align: center;
     color: #8b93a1;
 }
+
+.descripcion {
+    margin: 20px 0;
+
+    color: #667085;
+
+    font-size: 14px;
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+.google-button {
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 24px;
+}
+
+
+.mensaje-carga {
+    margin-top: 18px;
+
+    padding: 10px;
+
+    color: #344054;
+
+    background-color: #f2f4f7;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+
+.mensaje-error {
+    margin-top: 18px;
+
+    padding: 10px;
+
+    color: #b42318;
+
+    background-color: #fef3f2;
+
+    border: 1px solid #fecdca;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+
+.acceso-info {
+    margin-top: 22px;
+
+    color: #98a2b3;
+
+    font-size: 12px;
+    line-height: 1.4;
+
+    text-align: center;
+}
